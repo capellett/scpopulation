@@ -1,0 +1,386 @@
+---
+title: "Extended Scenarios"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+
+```{r}
+## Everything I do here will be done with both editions of the population projections.
+## that way the changes across editions can be compared.
+load("~/Rpackages/scpopulation/data/pop19.rda")
+load("~/Rpackages/scpopulation/data/pop22.rda")
+
+## As more editions come out, keep appending them here.
+pop1 <- dplyr::bind_rows(
+  `2019`=dplyr::select(pop19, -FIPS),
+  `2022`=dplyr::select(pop22, -FIPS),
+  ## `2025` = pop25, ## for example.
+  .id='Edition') %>%
+  dplyr::mutate(County = stringr::str_to_upper(County),
+                Type = dplyr::recode(Type, Projection='SC RFA Projection'))
+
+rm(pop19, pop22)
+```
+
+## Growth and Growth Rate
+```{r}
+## calculate the average population increase (linear)
+## and the high growth rate
+
+## I'm gonna go ahead and calculate the linear and exponential growth rates
+## for the Estimated data across the baseline as well as the RFA projections.
+
+## Each set of Edition, County, and Type is considered an independent timeseries
+## Time 0 is the first year of that series, and Time 1 is the last year of the series.
+
+pop2 <- pop1 %>%
+  dplyr::group_by(Edition, County, Type) %>%
+  dplyr::mutate(
+    T_0 = min(Year),
+    T_1 = max(Year),
+    Pop_0 = Population[which(Year==T_0)],
+    Pop_1 = Population[which(Year==T_1)],
+    Growth_linear = (Pop_1 - Pop_0)/(T_1-T_0),
+    Growth_exp = (Pop_1/Pop_0)^(1/(T_1-T_0)),
+    Growth_moderate = pmax(Growth_linear, 0)) %>%
+  dplyr::ungroup()
+
+hi_growth_floor <- pop2 %>%
+  dplyr::filter(County %in% c('South Carolina', 'SOUTH CAROLINA')) %>%
+  dplyr::distinct(Edition, Type, Growth_exp) %>%
+  dplyr::rename(Growth_exp_floor=Growth_exp)
+  
+pop3 <- pop2 %>%
+  dplyr::left_join(hi_growth_floor, c("Edition", "Type")) %>%
+  dplyr::mutate(Growth_hi = ((pmax(Growth_exp, Growth_exp_floor)-1)*1.1)+1)
+
+pop_rates <- pop3 %>%
+  dplyr::distinct(Edition, County, Type, T_0, T_1, Pop_0, Pop_1, 
+                  Growth_moderate, Growth_hi)
+```
+
+For the water-demand projections, the population projections are extended to 2070, and a high-growth scenario is developed. Two parameters are calculated from the population projections: the average annual growth, and the average annual growth rate. Population growth is expressed as a number of people per year (linear growth), and population growth rate is expressed as a percentage (exponential growth). 
+
+The average annual population growth for each county is calculated simply by taking the difference between the first and last years of projected populations, and then dividing by the number of years (this represents a linear growth model). For the moderate scenario of water-demand projections, the average annual growth is set to a minimum of 0. 
+
+The average annual growth rate is calculated by dividing the projected populations of the last year by the projected populations of the first year and then applying an exponent equal to the inverse of the number of years (this represents an exponential growth model). This is akin to calculating an annually compounding interest rate, and it results in a decimal which can be expressed as a percentage. For counties with average annual growth rates less than the state average (1.19% in the 2019 edition), the rates are adjusted to 1.19%. Then, for the high demand scenario, all annual growth rates are increased by 10%, so the minimum population growth rate is 1.31% (1.19% * 1.1 = 1.31%).
+
+## Extended Projections and High Growth Scenario
+```{r}
+### First create the high growth scenario along the RFA projections,
+pop_hi <- pop3 %>%
+  dplyr::mutate(Population = Growth_hi^(Year-T_0) * Pop_0) %>%
+  dplyr::group_by(Edition, County, Type) %>%
+  dplyr::mutate(Pop_1 = Population[Year==T_1],
+                Type2 = 'Extrapolated Projection')
+  
+pop4 <- dplyr::bind_rows(Moderate=pop3, High=pop_hi, .id='Scenario')
+```
+
+
+```{r}
+## then extend all scenarios.
+pop_ex <- pop4 %>%
+  dplyr::select(-Year, -Population) %>%
+  unique() %>%
+  dplyr::group_by(dplyr::across(dplyr::everything())) %>%
+  dplyr::group_modify(
+    .f = function(.x, .y) tibble::tibble(Year = (.y$T_1+1):2070)) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(
+    Population = dplyr::recode(
+      Scenario,
+      Moderate=Growth_moderate*(Year-T_1) + Pop_1, ## y = mx + b
+      High=Growth_hi^(Year-T_1) * Pop_1),
+    Type2='Extrapolated Projection') ## y = m^x * b
+
+pop5 <- dplyr::bind_rows(
+  Original=pop4, Extended=pop_ex, .id='Period')
+
+
+```
+
+```{r}
+# unique(pop5$County)
+# Period=='Original' & Scenario=='Moderate', 
+  
+pop_plot <- function(pop){
+  ggplot2::ggplot(
+    data=pop,
+    ggplot2::aes(
+      x=Year, y=Population, group=interaction(
+        Period, Scenario, Edition, Type),
+      color=Scenario, linetype=Type, size=Period, alpha=Edition)) +
+  ggplot2::geom_line() +
+  ggplot2::scale_color_manual(
+    values=c(Moderate='blue', High='red')) +
+  ggplot2::scale_linetype_manual(
+    values=c(Estimate='solid', Projection='dashed')) +
+  ggplot2::scale_alpha_manual(
+    values=c(`2019`=0.35, `2022`=1)) +
+  ggplot2::scale_size_manual(
+    values=c(Original=1, Extended=0.5)) +
+  # ggplot2::scale_y_log10()
+  ggplot2::theme_bw()}
+
+## make the estimated data line black
+```
+
+```{r}
+scales::show_col(viridis::turbo(9))
+# estimate = '#30123BFF'
+# new_moderate = '#466BE3FF'
+# new_high = '#D23105FF'
+# old_moderate = '#28BBECFF'
+# old_high = '#FB8022FF'
+
+```
+
+
+```{r}
+pop6 <- pop5 %>% dplyr::filter(
+  !(Type=='Estimate' & (Scenario=='High' | Period=='Extended')) &
+    !(Type=='Estimate' & Edition == '2021' & Year > 2009)) %>%
+  dplyr::mutate(Type = dplyr::if_else(!is.na(Type2), Type2, Type)) %>%
+  dplyr::mutate(Type = dplyr::if_else(
+    Type == 'Estimate', "Estimate",
+    dplyr::if_else(
+      Type == 'SC RFA Projection' & Edition == '2019', '2019 RFA Projection',
+      dplyr::if_else(
+        Type == 'SC RFA Projection' & Edition == '2022', '2022 RFA Projection',
+        dplyr::if_else(
+          Scenario == 'High' & Edition == '2019', '2019 High Extrapolation',
+          dplyr::if_else(
+           Scenario == 'High' & Edition == '2022', '2022 High Extrapolation',
+           dplyr::if_else(
+              Scenario == 'Moderate' & Edition == '2019', '2019 Moderate Extrapolation',
+              dplyr::if_else(
+               Scenario == 'Moderate' & Edition == '2022', '2022 Moderate Extrapolation', 'NA')
+              )))))))
+
+
+pop7 <- pop5 %>% dplyr::filter(
+  !(Type=='Estimate' & (Scenario=='High' | Period=='Extended'))) %>%
+  dplyr::mutate(Type = dplyr::if_else(!is.na(Type2), Type2, Type)) %>%
+  dplyr::mutate(Type2 = dplyr::if_else(
+    Type == 'Estimate', "Estimate",
+    dplyr::if_else(
+      Type == 'SC RFA Projection' & Edition == '2019', '2019 RFA Projection',
+      dplyr::if_else(
+        Type == 'SC RFA Projection' & Edition == '2022', '2022 RFA Projection',
+        dplyr::if_else(
+          Scenario == 'High' & Edition == '2019', '2019 High Extrapolation',
+          dplyr::if_else(
+           Scenario == 'High' & Edition == '2022', '2022 High Extrapolation',
+           dplyr::if_else(
+              Scenario == 'Moderate' & Edition == '2019', '2019 Moderate Extrapolation',
+              dplyr::if_else(
+               Scenario == 'Moderate' & Edition == '2022', '2022 Moderate Extrapolation', 'NA')
+              )))))),
+    Scenario = dplyr::if_else(Type=='Estimate', 'Estimate', Scenario))
+
+
+
+distinct(pop6, Period, Scenario, Edition, Type, Type2)
+# 
+# dplyr::filter(pop6, Type == 'Estimate') %>%
+#   distinct(Edition, Year)
+```
+
+```{r}
+
+# estimate = '#30123BFF'
+# new_moderate = '#466BE3FF'
+# new_high = '#D23105FF'
+# old_moderate = '#28BBECFF'
+# old_high = '#FB8022FF'
+
+pop_plot2 <- function(pop6){
+  ggplot2::ggplot(
+    data=pop,
+    ggplot2::aes(
+      x=Year, y=Population, group=Type,
+      color=Type, linetype=Type)) +
+  ggplot2::geom_line(size=1) +
+  ggplot2::scale_color_manual(
+    values=c(Estimate='#30123BFF', 
+             `2019 RFA Projection`='#28BBECFF',
+             `2022 RFA Projection`='#466BE3FF',
+             `2019 Moderate Extrapolation`='#28BBECFF',
+             `2019 High Extrapolation`='#FB8022FF',
+             `2022 Moderate Extrapolation`='#466BE3FF',
+             `2022 High Extrapolation`='#D23105FF')) +
+  ggplot2::scale_linetype_manual(
+    values=c(Estimate='solid', 
+             `2019 RFA Projection`='solid',
+             `2022 RFA Projection`='solid',
+             `2019 Moderate Extrapolation`='dotted',
+             `2019 High Extrapolation`='dotted',
+             `2022 Moderate Extrapolation`='dotted',
+             `2022 High Extrapolation`='dotted')) +
+  # ggplot2::scale_alpha_manual(
+  #   values=c(`2019`=0.35, `2022`=1)) +
+  # ggplot2::scale_size_manual(
+  #   values=c(Original=1, Extended=0.5)) +
+  # ggplot2::scale_y_log10()
+  ggplot2::theme_bw() +
+    ggplot2::theme(legend.position='bottom', legend.title=ggplot2::element_blank())
+    }
+
+pop6 %>%
+  dplyr::filter(County == 'SOUTH CAROLINA') %>%
+  pop_plot2()
+```
+
+```{r}
+pop_plot3 <- function(pop){
+  ggplot2::ggplot(
+    data=pop,
+    ggplot2::aes(
+      x=Year, y=Population/1000, group=Scenario,
+      color=Scenario)) +
+  ggplot2::geom_line(size=1) +
+  ggplot2::scale_color_manual(
+    values=c(Moderate='blue', High='red', Estimate='black')) +
+  ggplot2::theme_bw() +
+    ggplot2::facet_grid(County~Edition, scales='free_y')}
+
+pop7 %>%
+  dplyr::filter(County == 'SOUTH CAROLINA') %>%
+  pop_plot3()
+```
+
+```{r}
+## filter counties in Pee Dee basin.
+pd_basin <- scsf::basins %>%
+  dplyr::filter(Basin == 'PeeDee')
+
+pd_counties <- scsf::counties %>%
+  sf::st_filter(pd_basin) %>%
+  dplyr::arrange(County)
+
+```
+
+```{r}
+pop7 %>%
+  dplyr::mutate(County = stringr::str_to_title(County)) %>%
+  dplyr::filter(County %in% pd_counties$County[1:8]) %>%
+  pop_plot3() +
+  ggplot2::theme(legend.position='bottom', legend.title=ggplot2::element_blank()) +
+  ggplot2::ylab('Population (thousands)')
+
+```
+
+
+
+
+```{r}
+## Filter: 
+pop6  %>% 
+  dplyr::group_by(County) %>%
+  dplyr::group_walk(.f=function(.x, .y){
+    ggplot2::ggsave(
+      filename=paste0(.y$County, '.png'),
+      plot=pop_plot(.x),
+      path='plots',
+      device='png')})
+
+```
+
+
+
+
+```{r, eval=F}
+## This is old code.
+## Extend the projections to 2070 and add the high-demand scenario
+pop_extended <- pop_rates %>%
+  dplyr::group_by(County) %>%
+  dplyr::do({
+    basis2020 <- .$`2020`
+    basis2035 <- .$`2035`
+    avg_growth <- .$avg_growth
+    hi_growth_rate <- .$hi_growth_rate
+    tibble::tibble(Year = 2020:2070, i = 0:50) %>%
+      dplyr::mutate(
+        `extended moderate growth` = dplyr::if_else(
+          Year<2036, NA_real_, basis2035 + avg_growth*(i-15)),
+        `high growth` = basis2020 * (1+hi_growth_rate)^i)}) %>%
+  dplyr::ungroup() %>% dplyr::select(-i) %>%
+  tidyr::gather(
+    'Type', 'Population', `extended moderate growth`, `high growth`) %>%
+  dplyr::filter(!is.na(Population))
+  
+pop_proj <- dplyr::bind_rows(
+  dplyr::mutate(pop, Type='SC ORFA projection'),
+  pop_extended)
+
+usethis::use_data(pop_proj, overwrite=TRUE)
+```
+For the moderate water-demand scenario, the population projections are extended each year from 2036 to 2070 by adding the average population growth for each county. 
+
+Population projections for the high demand scenario are calculated by adding 1 to the annual growth rates, raising the growth rates to an exponent equal to the year of the projection (e.g. the 2021 growth rate is raised to an exponent of 1, and the 2070 growth rate is raised to an exponent of 50), and then multiplying by the 2020 population.
+
+
+## Examples
+```{r}
+## plot examples
+dplyr::filter(pop_proj, County %in% c('Allendale', 'Greenville', 'Horry')) %>%
+  scwaterdemand::county_population_projection_plot()
+
+## plot all
+# dplyr::filter(p_proj, County != 'South Carolina') %>%
+#   p_proj_plot()
+```
+The plot above shows the population projections for Allendale, Greenville, and Horry counties. Allendale is projected by SC ORFA to have the lowest annual growth rate, shrinking by over 2% annually. The moderate growth population projection flat-lines as the SC ORFA projection is extended to 2070. The high growth population projection has an annual growth rate of 1.31%, which is the minimum, calculated by increasing the state average growth rate by 10%.
+
+Greenville county is projected by SC ORFA to grow at slightly above the state average. Horry county is projected by SC ORFA at the highest growth rate of any county in SC.
+
+
+## Relative Growth Projections
+```{r}
+## Since the water suppliers don't have the same population as the counties
+## I need to calculate the relative changes in population at the county scale
+## so that can be applied to the populations of the water suppliers.
+
+pop_proj_relative <- pop7 %>%
+  dplyr::filter(Year %in% c(2021:2070) & Edition == '2022') %>%
+  dplyr::select(Scenario, County, Year, Population) %>%
+  tidyr::spread('Scenario', 'Population') %>%
+  dplyr::group_by(County, Year) %>%
+  dplyr::mutate(Driver_growth_mod = Moderate / Moderate[which.min(Year)],
+                Driver_growth_hi = High / High[which.min(Year)])
+
+
+
+# pop_proj2 <- pop_proj %>%
+#   dplyr::filter(Year %in% c(2020:2070)) %>%
+#   dplyr::mutate(
+#     Type = dplyr::if_else(Type=='high growth', "Driver_hi", "Driver_bu")) %>%
+#   unique() %>%
+#   tidyr::spread(., "Type", "Population")
+# 
+# 
+# pop_proj2_start <- pop_proj2 %>%
+#   dplyr::filter(Year==2020) %>%
+#   dplyr::select(County, Driver_start=Driver_bu)
+# 
+# pop_proj_relative <- pop_proj2 %>% 
+#   dplyr::left_join(pop_proj2_start, "County") %>%
+#   dplyr::mutate(Driver_growth_bu = Driver_bu/Driver_start,
+#                 Driver_growth_hi = Driver_hi/Driver_start) %>%
+#   # dplyr::filter(Year != 2013) %>%
+#   dplyr::select(-Driver_start, -Driver_bu, -Driver_hi)
+
+usethis::use_data(pop_proj_relative, overwrite=TRUE)
+```
+To translate the county population projections to the drinking water distributors, the population projections are converted in to relative growth. This is done by simply dividing the projected populations for each scenario, county, and year by the 2020 population for that county. 
+
+
+	
+
+

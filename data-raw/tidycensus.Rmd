@@ -1,0 +1,116 @@
+---
+title: "Tidy Census"
+output: html_document
+date: "`r Sys.Date()`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# install.packages('tidycensus')
+
+library(tidycensus)
+
+
+## API keys can be obtained at https://api.census.gov/data/key_signup.html
+# census_api_key("4d1207bf6480c1a036041e923323700e8d73c7f6", install = TRUE)
+
+
+```
+
+## Get 5 year ACS datasets
+```{r}
+
+tidycensus::load_variables(dataset='acs5')
+
+# the 5-year ACS covers geographies down to the block group, 
+# the 1-year ACS only returns data for geographies of population 65,000+
+# some geographies (e.g. Census tracts) will never be available in the 1-year ACS, 
+# and other geographies (counties) are only partially available.
+
+## go with 5 year ACS
+acs.cnty <- tidycensus::get_acs(
+  state = 'SC',
+  geography = 'county',
+  variables = c(''),
+  survey = 'acs5', ## 1 year acs.
+  year = 2020 ## 2010, 2015, 2020
+)
+
+
+acs.bg <- tidycensus::get_acs(
+  state = 'SC',
+  geography= 'block group',
+  variables = c(''),
+  survey = 'acs5', ## 1 year acs.
+  year = 2020 ## 2010, 2015, 2020
+)
+
+# if users desire an entire table of related variables from the ACS, 
+# should supply the characters prior to the underscore from a variable ID to the table parameter.
+
+```
+
+
+## Get Population Estimates Program datasets
+
+```{r}
+pop.est <- tidycensus::get_estimates(
+  geography = "county", ## block group?
+  product = "characteristics",
+  breakdown = c("SEX", "AGEGROUP"),
+  breakdown_labels = TRUE,
+  state = "SC",
+  year = 2019
+)
+
+
+```
+
+## Get Migration Flows
+```{r}
+# tidycensus::get_flows() ## includes functionality for migration flow mapping 
+
+```
+
+## Longitudinal Analysis
+```{r}
+## CAUTION: When a geographic entity changes name, the Census Bureau assigns it a new GEOID
+
+## CAUTION: variable IDs for the Data Profile are unique to each year, no good for time-series analysis
+
+## The safest option for time-series analysis in the ACS is the Comparison Profile Tables. 
+## available for both the 1-year and 5-year ACS, 
+## allow comparison of demographic indicators over the past five years for a given year. 
+## also brings additional variable harmonization, such as inflation-adjusted income estimates.
+## accessed using tidycensus::get_acs()
+
+
+
+## using the detail tables
+## first, check availability using load_variables() for years to analyze
+
+
+years <- 2010:2019
+names(years) <- years
+
+college_by_year <- map_dfr(years, ~{
+  get_acs(
+    geography = "county",
+    variables = college_vars,
+    state = "CO",
+    summary_var = "B15002_001",
+    survey = "acs1",
+    year = .x
+  )
+}, .id = "year")
+
+## you can set Margin of Error level in the get_acs() function with: moe_level = 99
+## uses Census recommended equations to adjust the moe from the default of 90% confidence interval.
+
+
+
+
+
+```
+

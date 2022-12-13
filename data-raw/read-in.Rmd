@@ -1,0 +1,118 @@
+---
+title: "Population Projections 1"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+The SC Office of Revenue and Fiscal Affairs (RFA) publishes population projections for each county in the state. The RFA population projections are stratified by gender and cohort. The projections were developed using the cohort-component method: rates of birth, death, migration are calculated for each gender-cohort in each county; the calculated rates are then applied to the county populations to project future populations year by year. The underlying assumption of this method is that the relevant demographic rates calculated from the calibration period will remain uniform across the projection period.
+
+Two editions of the SC ORFA population projections are reviewed and compared. The earlier edition (November 2019) includes population estimates from 2000 to 2018 and projections from 2019 to 2035. The more recent edition (August 2022) includes estimates from 2010 to 2020 and projections from 2021 to 2038. 
+
+Only county total population numbers are relevant to my analyses at this point.
+
+# The 2019 Edition
+```{r population-proj-read}
+pop19_raw <- readxl::read_excel("SC population projections through 2035_county totals.xls") %>%
+  dplyr::filter(!is.na(County)) %>% ## this removes the metadata, pasted below
+  dplyr::mutate(`2018 Estimates Total` = as.numeric(`2018 Estimates Total`))
+```
+
+## 2019 Metadata
+The excel file contains the following notes (metadata):
+
+"Population estimates for 2000 and 2018 were calculated using the Bridged-race Intercensal Population Estimates for July 1, 2000 -July 1, 2009 and the Vintage 2018 Bridged-Race Postcensal Estimates for July 1, 2010 -July 1, 2018. These estimates were produced by the Population Estimates Program of the U.S. Census Bureau in collaboration with National Center for Health Statistics. Estimates for 2000 through 2018 from previous or future releases of the postcensal estimates will vary slightly from the 2000 through 2018 data in this table. For all years, the population is estimated for July 1st of that year. Estimates for 2000 and 2010 will not be equivalent to the April 1st decennial census count from Census 2000 and Census 2010."							
+
+"Population Projections for 2019 through 2035 were calculated by the S.C. Revenue and Fiscal Affairs Health and Demographics Section. Births and deaths data used in the population projections calculations was supplied by the SC DHEC Division of Biostatistics.								
+							
+"Note: The projections included in this report were calculated using the cohort-component model of demographic change. This model uses a base population at a beginning date, applies assumed survival rates, fertility rates, and net migration to calculate population projections.								
+
+"These projections are not intended to be a forecast; rather, they are intended to demonstrate a likely scenario if future events unfold in a manner that reflects previous trends observed within each group. The model cannot account for unprecedented events that may significantly alter an area’s demographic composition in the future. These possible events include large factory openings or closings, changes in technology, public health crises, environmental events, changes in the economy, or other conditions that could affect birth rates, death rates, or domestic and international migration. This means that population projections are likely to be more accurate in the immediate future than in distant years into the future."
+
+## Reformat according to R Tidyverse standards
+```{r}
+## Make it tidy data
+pop19_gender <- pop19_raw %>%
+  tidyr::pivot_longer(cols = 3:110, names_to = c("Year", "Type", "Gender"), 
+                      values_to = "Population", names_sep=' ') %>%
+  dplyr::mutate(Year = as.integer(stringr::str_sub(Year, 1 ,4)),
+                Type = stringr::str_sub(Type, end=-2)) %>%
+  dplyr::rename(FIPS = 'FIPS code')
+```
+The RFA population table has `r nrow(pop2019_raw)` rows and `r ncol(pop2019_raw)` columns - a row for each county and a column for each combination of year and gender. Tables with similar numbers of rows and columns, roughly square shaped, are convenient for reading, but a different form is recommended for coding with R. The raw table is reshaped to _long form_ by creating new columns for Year, Type (estimates or projection), Gender (Total, Male, or Female), and Population. This results in `r nrow(pop19)` rows and the following columns: `r scutils::comma_and(names(pop19))`. 
+
+```{r}
+## Summarize Totals
+pop19 <- pop19_gender %>%
+  dplyr::filter(Gender=='Total') %>%
+  dplyr::select(-Gender)
+
+```
+
+
+# The 2022 Edition
+```{r}
+pop22_raw <- readxl::read_excel("BASE20162020_1yrint_5yragrp_V21_11AUG22.xlsx", skip=2) %>%
+  dplyr::filter(!is.na(`COUNTY NAME`)) ## this removes the metadata, pasted below
+
+```
+
+## 2022 Metadata
+"Sources: Vintage 2020 Postcensal Estimates for July 1, 2010 -July 1, 2019.  Vintage 2021 Postcensal Estimates for July 1, 2020. These estimates were produced by the Population Estimates Program of the U.S. Census Bureau. Estimates for 2010 through 2020 from previous or future releases of the postcensal estimates will vary slightly from the 2010 through 2020 data in this table. For all years, the population is estimated for July 1st of that year. Estimates for 2020 will not be equivalent to the April 1st decennial census count from Census 2020.
+
+"Population Projections for 2021 through 20230 were calculated by the S.C. Revenue and Fiscal Affairs Data Integration and Analysis Division. Births and deaths data used in the population projections calculations was supplied by the SC DHEC Division of Biostatistics.	
+
+"Note: The projections included in this report were calculated using the cohort-component model of demographic change. This model uses a base population distributed by age and sex at a beginning date, applies assumed survival rates, age-specific fertility rates, and net migration by age and sex to calculate population projections.	
+
+"These projections offer only one possible scenario of future population change using the most current data available. The overall accuracy of the projections depends on the extent to which future events unfold in a manner that reflects previous trends observed within each group. The model cannot account for unprecedented events that may significantly alter an area’s demographic composition in the future. These possible events include large factory openings or closings, changes in technology, public health crises, environmental events, changes in the economy, or other conditions that could affect birth rates, death rates, or domestic and international migration. This means that population projections are likely to be more accurate in the immediate future than in distant years into the future."							
+
+## Reformat to R Tidyverse Standards
+```{r}
+pop22_cohort1 <- pop22_raw %>%
+  tidyr::pivot_longer(cols = 4:90, names_to = c("Gender", "Year"), 
+                      values_to = "Population", names_sep=1) %>%
+  dplyr::mutate(Year = as.integer(stringr::str_sub(Year, 1 ,4)),
+                Gender = dplyr::recode(Gender, `T`='Total', 
+                                       `F`='Female', M='Male'),
+                Type = dplyr::if_else(Year<2021, 'Estimate', 'Projection')) %>%
+  dplyr::rename(County='COUNTY NAME', FIPS='COUNTY FIPS')
+
+## Calculate State-wide populations
+pop22_cohort_statewide <- pop22_cohort1 %>%
+  dplyr::group_by(`AGE GROUP`, Gender, Year, Type) %>%
+  dplyr::summarise(Population = sum(Population),
+                   County = "SOUTH CAROLINA")
+
+pop22_cohort <- dplyr::bind_rows(pop22_cohort1, pop22_cohort_statewide)
+
+
+
+
+## Population trees for selected counties and state-wide
+
+```
+
+## Summarize Total Populations Across Cohorts
+```{r}
+pop22_gender <- pop22_cohort %>%
+  dplyr::group_by(FIPS, County, Year, Type, Gender) %>%
+  dplyr::summarise(Population=sum(Population), .groups='drop')
+
+pop22 <- pop22_gender %>%
+  dplyr::filter(Gender=='Total') %>%
+  dplyr::select(-Gender)
+```
+
+#
+```{r}
+usethis::use_data(pop19_gender, overwrite=T)
+usethis::use_data(pop19, overwrite=T)
+usethis::use_data(pop22_gender, overwrite=T)
+usethis::use_data(pop22_cohort, overwrite=T)
+usethis::use_data(pop22, overwrite=T)
+
+```
+
