@@ -277,7 +277,11 @@ pop7 %>%
 ```
 
 
+```{r}
+pop_proj <- pop7
 
+usethis::use_data(pop_proj, overwrite=T)
+```
 
 ```{r eval=F}
 ## Filter: 
