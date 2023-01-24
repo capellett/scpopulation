@@ -200,7 +200,7 @@ distinct(pop6, Period, Scenario, Edition, Type, Type2)
 # old_moderate = '#28BBECFF'
 # old_high = '#FB8022FF'
 
-pop_plot2 <- function(pop6){
+pop_plot2 <- function(pop){
   ggplot2::ggplot(
     data=pop,
     ggplot2::aes(
@@ -279,7 +279,7 @@ pop7 %>%
 
 
 
-```{r}
+```{r eval=F}
 ## Filter: 
 pop6  %>% 
   dplyr::group_by(County) %>%
@@ -351,7 +351,7 @@ pop_proj_relative <- pop7 %>%
   dplyr::filter(Year %in% c(2021:2070) & Edition == '2022') %>%
   dplyr::select(Scenario, County, Year, Population) %>%
   tidyr::spread('Scenario', 'Population') %>%
-  dplyr::group_by(County, Year) %>%
+  dplyr::group_by(County) %>%
   dplyr::mutate(Driver_growth_mod = Moderate / Moderate[which.min(Year)],
                 Driver_growth_hi = High / High[which.min(Year)])
 
