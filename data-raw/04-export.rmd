@@ -1,0 +1,50 @@
+---
+title: "04-Export"
+author: "C A Pellett"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+```
+
+```{r}
+load("~/Rpackages/scpopulation/data/pop_proj.rda")
+
+```
+
+
+```{r}
+unique(pop_proj$Edition)
+
+pop_proj_x <- pop_proj %>%
+  dplyr::filter(Edition == '2022')
+
+unique(pop_proj_x$Scenario)
+unique(pop_proj_x$Type)
+unique(pop_proj_x$Type2)
+
+unique(pop_proj_x$Period)
+
+pop_proj_x %>%
+  dplyr::filter(Scenario == 'Estimate') %>%
+  dplyr::select(County, Year, Population) %>%
+  tidyr::pivot_wider(names_from=Year, values_from=Population) %>%
+  readr::write_excel_csv('export//Population_historic.csv')
+
+pop_proj_x %>%
+  dplyr::filter(Scenario == 'Moderate') %>%
+  dplyr::select(County, Year, Population) %>%
+  tidyr::pivot_wider(names_from=Year, values_from=Population) %>%
+  readr::write_excel_csv('export//Population_moderate.csv')
+
+pop_proj_x %>%
+  dplyr::filter(Scenario == 'High') %>%
+  dplyr::select(County, Year, Population) %>%
+  tidyr::pivot_wider(names_from=Year, values_from=Population) %>%
+  readr::write_excel_csv('export//Population_high.csv')
+
+```
