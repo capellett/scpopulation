@@ -1,5 +1,7 @@
 ---
 title: "Extended Scenarios"
+author: "C A Pellett"
+date: "`r Sys.Date()`"
 output: html_document
 ---
 
@@ -159,7 +161,7 @@ usethis::use_data(pop_proj, overwrite=T)
 ```{r}
 pop_proj %>%
   dplyr::mutate(County = stringr::str_to_title(County)) %>%
-  dplyr::filter(County %in%  c('Allendale', 'Greenville', 'Horry')) %>%
+  dplyr::filter(County %in%  c('Allendale', 'Greenville', 'Horry', 'Spartanburg')) %>%
   simpler_plot() +
   ggplot2::theme(legend.position='bottom', legend.title=ggplot2::element_blank()) +
   ggplot2::ylab('Population (thousands)')
@@ -182,7 +184,8 @@ pop_proj_relative <- pop_proj %>%
   tidyr::spread('Scenario', 'Population') %>%
   dplyr::group_by(County) %>%
   dplyr::mutate(Driver_growth_mod = Moderate / Moderate[which.min(Year)],
-                Driver_growth_hi = High / High[which.min(Year)])
+                Driver_growth_hi = High / High[which.min(Year)]) %>%
+  dplyr::ungroup()
 
 usethis::use_data(pop_proj_relative, overwrite=TRUE)
 
