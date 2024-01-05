@@ -1,5 +1,5 @@
 Package: scpopulation
-Title: What the Package Does (One Line, Title Case)
+Title: Data for populationprojections for each county in South Carolina
 Version: 0.0.0.9000
 Authors@R: c(
     person("C A", "Pellett", , "c.alex.pellett@gmail.com", role = c("aut", "cre")),
@@ -16,3 +16,5 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
+
+
