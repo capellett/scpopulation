@@ -12,7 +12,7 @@ library(tidyverse)
 ```
 
 ```{r}
-load("~/Rpackages/scpopulation/data/pop_proj.rda")
+load("../data/pop_proj.rda")
 
 ```
 
