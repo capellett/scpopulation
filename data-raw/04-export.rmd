@@ -16,6 +16,22 @@ load("~/Rpackages/scpopulation/data/pop_proj.rda")
 
 ```
 
+```{r}
+unique(pop_proj$Period)
+unique(pop_proj$Scenario)
+unique(pop_proj$Type)
+unique(pop_proj$Type2)
+unique(pop_proj$County)
+
+pop_proj |>
+  dplyr::filter(Period == 'Original' & Edition == '2022' & County == 'SOUTH CAROLINA' & 
+                  Type2 %in% c('Estimate', '2022 RFA Projection')) |>
+  dplyr::select(Year, Population) |>
+  write.csv(file='RFA 2022 Vintage Statewide Population Projections.csv')
+  
+
+```
+
 
 ```{r}
 unique(pop_proj$Edition)
