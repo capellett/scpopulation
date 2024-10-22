@@ -32,13 +32,11 @@ library(tidyverse)
 ```
 
 
-
-
 ```{r eval=F}
 ## Organizing the data like this makes it possible to create a plot,
 ## which I like, but it probably isn't great for display purposes.
 ## Maybe it is too complex or difficult to interpret.
-pop6b <- pop5 %>% dplyr::filter(
+pop_proj_plot <- pop_proj %>% dplyr::filter(
   !(Type=='Estimate' & Edition == '2021' & Year > 2009)) %>%
   dplyr::mutate(Type = dplyr::if_else(!is.na(Type2), Type2, Type)) %>%
   dplyr::mutate(Type = dplyr::if_else(
@@ -103,43 +101,6 @@ pop6b %>%
   dplyr::filter(County == 'SOUTH CAROLINA') %>%
   complicated_plot()
 ```
-
-```{r eval=F}
-## This plot uses alpha (transparency) to designate the older edition.
-alpha_plot <- function(pop){
-  ggplot2::ggplot(
-    data=pop,
-    ggplot2::aes(
-      x=Year, y=Population, group=interaction(
-        Period, Scenario, Edition, Type),
-      color=Scenario, linetype=Type, size=Period, alpha=Edition)) +
-  ggplot2::geom_line() +
-  ggplot2::scale_color_manual(
-    values=c(Moderate='blue', High='red')) +
-  ggplot2::scale_linetype_manual(
-    values=c(Estimate='solid', Projection='dashed')) +
-  ggplot2::scale_alpha_manual(
-    values=c(`2019`=0.35, `2022`=1)) +
-  ggplot2::scale_size_manual(
-    values=c(Original=1, Extended=0.5)) +
-  # ggplot2::scale_y_log10()
-  ggplot2::theme_bw()}
-
-## make the estimated data line black
-
-## Save a plot for each county
-pop6b %>% 
-  dplyr::group_by(County) %>%
-  dplyr::group_walk(.f=function(.x, .y){
-    ggplot2::ggsave(
-      filename=paste0(.y$County, '.png'),
-      plot=alpha_plot(.x),
-      path='plots',
-      device='png')})
-
-```
-
-
 
 ```{r, eval=F}
 ## This is old code.
