@@ -37,7 +37,7 @@ Tidy Format of (Nov 2022 Data)
 }
 \examples{
 data(pop19_gender)
- head(pop19_gender)
+head(pop19_gender)
 data(pop22_gender )
  head(pop22_gender )
 }

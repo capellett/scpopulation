@@ -1,9 +1,11 @@
 Package: scpopulation
-Title: Data for populationprojections for each county in South Carolina
+Title: Population data and projections for each county in South Carolina
 Version: 0.0.0.9000
 Authors@R: c(
     person("C A", "Pellett", , "c.alex.pellett@gmail.com", role = c("aut", "cre")),
-    person("State of South Carolina Department of Natural Resources", role = "fnd")
+    person("State of South Carolina Department of Natural Resources", role = "fnd"),
+    person("State of South Carolina Department of Environmental Services", role = "fnd"),
+    person("Laljeet", "Sangha", , "lsangha@ucanr.edu", role = "ctb")
   )
 Description: What the package does (one paragraph).
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
@@ -15,6 +17,4 @@ Depends:
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
-
-
+RoxygenNote: 7.3.2

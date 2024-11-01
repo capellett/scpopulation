@@ -15,8 +15,7 @@
 #'
 #' @examples
 #' data(pop19_gender)
-#'  head(pop19_gender)
-
+#' head(pop19_gender)
 "pop19_gender"
 
 #'pop19
@@ -34,9 +33,7 @@
 #' @examples
 #' data(pop19)
 #' head(pop19)
-
 "pop19"
-
 
 
 #'pop22_cohort
@@ -56,11 +53,9 @@
 #' @examples
 #' data(pop22_cohort)
 #' head(pop22_cohort)
-#'
 "pop22_cohort"
-#'
-#'
-#'
+
+
 #' pop22_gender
 #'
 #' Tidy Format of (Nov 2022 Data)
@@ -78,7 +73,6 @@
 #' @examples
 #' data(pop22_gender )
 #'  head(pop22_gender )
-
 "pop19_gender"
 
 
@@ -97,7 +91,6 @@
 #' @examples
 #' data(pop22)
 #' head(pop22)
-
 "pop22"
 
 #' pop_proj_relative: Relative Growth Projections for Different Counties
@@ -134,8 +127,4 @@
 #' data(pop_proj_relative)
 #' head(pop_proj_relative)
 "pop_proj_relative"
-
-
-
-
 

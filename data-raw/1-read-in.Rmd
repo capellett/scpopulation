@@ -86,7 +86,12 @@ pop22_cohort_statewide <- pop22_cohort1 %>%
   dplyr::summarise(Population = sum(Population),
                    County = "SOUTH CAROLINA")
 
-pop22_cohort <- dplyr::bind_rows(pop22_cohort1, pop22_cohort_statewide)
+pop22_cohort <- dplyr::bind_rows(pop22_cohort1, pop22_cohort_statewide) |>
+  dplyr::rename(Age = `AGE GROUP`) |>
+  dplyr::mutate(Age = Age |> 
+                  stringr::str_to_upper() |>
+                  stringr::str_replace(' TO ', '-') |>
+                  forcats::fct_inorder())
 
 
 
@@ -116,3 +121,33 @@ usethis::use_data(pop22, overwrite=T)
 
 ```
 
+
+## Population Pyramid Plots
+
+https://rfortherestofus.com/2024/07/population-pyramid-part-1
+
+```{r}
+
+pyramid_plot <- function(df) {
+  dplyr::filter(df, Gender %in% c("Male", "Female")) |>
+    dplyr::mutate(Population = if_else(
+      Gender == 'Male', Population, -Population)) |>  
+    ggplot2::ggplot(
+      ggplot2::aes(x=Population, y=`Age`, fill=Gender)) +
+    ggplot2::geom_col() +
+    ggplot2::scale_x_continuous(
+      labels = function(x) scales::label_comma()(abs(x)),
+      breaks = scales::breaks_pretty()
+    ) +
+    ggplot2::theme_bw()
+}
+
+pop22_cohort |>
+  dplyr::filter(County == 'SOUTH CAROLINA' & Year == 2021) |>
+  pyramid_plot()
+
+## annimate for all years.
+
+## add filter for counties.
+
+```

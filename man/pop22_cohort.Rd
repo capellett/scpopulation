@@ -26,6 +26,5 @@ A transformed and summarized population data, distinguishing between Estimate an
 \examples{
 data(pop22_cohort)
 head(pop22_cohort)
-
 }
 \keyword{datasets}
