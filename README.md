@@ -4,33 +4,28 @@
 # scpopulation
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
-The goal of scpopulation is to …
-
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+The scpopulation package stores county level population data and
+projections from the South Carolina Office of Revenue and Fiscal Affairs
+(SC RFA). The package was developed and is maintained by Dr. Charles
+Alex Pellett, while working at the South Carolina Department of Natural
+Resources (SC DNR) and subsequently the South Carolina Department of
+Environmental Services (SC DES). This information is for research and
+long-term water planning. None of the above guarantees the accuracy,
+reliability, or completeness of this information. The SC RFA, SC DNR, SC
+DES, and Dr. Pellett are NOT liable for any loss or damage arising from
+the use of this information.
 
 ``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
+### Show statewide plot with different projections over time.
+
+## Show animated cohort-component plots.
+
+## Show extended projections for several counties.
+
+## Show extended statewide projections
+
+## Provide searchable tables for download.
 ```
-
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this. You could also
-use GitHub Actions to re-render `README.Rmd` every time you push. An
-example workflow can be found here:
-<https://github.com/r-lib/actions/tree/v1/examples>.
-
-You can also embed plots, for example:
-
-![](README_files/figure-gfm/pressure-1.png)<!-- -->
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub.
