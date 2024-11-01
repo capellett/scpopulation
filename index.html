@@ -48,10 +48,41 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="scpopulation">scpopulation<a class="anchor" aria-label="anchor" href="#scpopulation"></a>
 </h1></div>
+<div class="section level2">
+<h2 id="an-r-package-containing-population-data-for-the-state-of-south-carolina">An R-package containing population data for the state of South Carolina.<a class="anchor" aria-label="anchor" href="#an-r-package-containing-population-data-for-the-state-of-south-carolina"></a>
+</h2>
 <!-- badges: start -->
 <!-- badges: end -->
-<p>The scpopulation package stores county level population data and projections from the South Carolina Office of Revenue and Fiscal Affairs (SC RFA). The package was developed and is maintained by Dr. Charles Alex Pellett, while working at the South Carolina Department of Natural Resources (SC DNR) and subsequently the South Carolina Department of Environmental Services (SC DES). This information is for research and long-term water planning. None of the above guarantees the accuracy, reliability, or completeness of this information. The SC RFA, SC DNR, SC DES, and Dr. Pellett are NOT liable for any loss or damage arising from the use of this information.</p>
+<p>The <code>scpopulation</code> is an open-source R-package published on GitHub. The package stores county level population data and projections from the South Carolina Office of Revenue and Fiscal Affairs (SC RFA). This website documents the scpopulation R-package and provides access to the data for the general public without requiring the use of R software.</p>
+<p>This package was developed and is maintained by Dr. Charles Alex Pellett, while working at the South Carolina Department of Natural Resources (SC DNR) and subsequently the South Carolina Department of Environmental Services (SC DES). This information is for research and long-term water planning. None of the above guarantees the accuracy, reliability, or completeness of this information. The SC RFA, SC DNR, SC DES, and Dr. Pellett are NOT liable for any loss or damage arising from the use of this information.</p>
+<p>As an R-package, <code>scpopulation</code> can be installed in an R terminal with the following code:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># install.packages('devtools') </span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">'https://github.com/capellett/scpopulation'</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="statewide-population-projection-summary">Statewide population projection summary<a class="anchor" aria-label="anchor" href="#statewide-population-projection-summary"></a>
+</h2>
+<div class="section level3">
+<h3 id="multiple-editions">Multiple editions<a class="anchor" aria-label="anchor" href="#multiple-editions"></a>
+</h3>
+</div>
+<div class="section level3">
+<h3 id="extended-projections">Extended projections<a class="anchor" aria-label="anchor" href="#extended-projections"></a>
+</h3>
+</div>
+<div class="section level3">
+<h3 id="multiple-scenarios">Multiple scenarios<a class="anchor" aria-label="anchor" href="#multiple-scenarios"></a>
+</h3>
+</div>
+</div>
+<div class="section level2">
+<h2 id="county-level-cohort-component-projections">County-level cohort-component projections<a class="anchor" aria-label="anchor" href="#county-level-cohort-component-projections"></a>
+</h2>
+<div class="section level3">
+<h3 id="population-pyramids">Population pyramids<a class="anchor" aria-label="anchor" href="#population-pyramids"></a>
+</h3>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">### Show statewide plot with different projections over time.</span></span>
 <span></span>
 <span><span class="co">## Show animated cohort-component plots.</span></span>
@@ -61,6 +92,8 @@
 <span><span class="co">## Show extended statewide projections</span></span>
 <span></span>
 <span><span class="co">## Provide searchable tables for download.</span></span></code></pre></div>
+</div>
+</div>
 </div>
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
