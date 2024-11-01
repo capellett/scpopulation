@@ -10,7 +10,7 @@ Authors@R: c(
 Description: What the package does (one paragraph).
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
-URL: https://github.com/capellett/scpopulation
+URL: https://github.com/capellett/scpopulation, https://capellett.github.io/scpopulation/
 BugReports: https://github.com/capellett/scpopulation/issues
 Depends: 
     R (>= 2.10)
