@@ -1,5 +1,17 @@
+#' Population Data from 2019 Edition
+#'
+#' @format A data frame with columns:
+#' \describe{
+#'   \item{FIPS}{FIPS code}
+#'   \item{County}{County name}
+#'   \item{Year}{Year}
+#'   \item{Type}{Estimate or Projection}
+#'   \item{Gender}{Total, Male, or Female}
+#'   \item{Population}{Population count}
+#' }
+"pop19_gender"
 
-#' pop19_gender
+# ... (your other dataset documentation) #' pop19_gender
 #'
 #' Tidy Format of Raw Data (Nov 2019 Data)
 #'
@@ -73,7 +85,7 @@
 #' @examples
 #' data(pop22_gender )
 #'  head(pop22_gender )
-"pop19_gender"
+"pop22_gender"
 
 
 #'pop22
@@ -127,4 +139,3 @@
 #' data(pop_proj_relative)
 #' head(pop_proj_relative)
 "pop_proj_relative"
-
