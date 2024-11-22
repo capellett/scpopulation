@@ -194,10 +194,13 @@ growth), and population growth rate is expressed as a percentage
 <span>    Growth_exp <span class="op">=</span> <span class="op">(</span><span class="va">Pop_1</span><span class="op">/</span><span class="va">Pop_0</span><span class="op">)</span><span class="op">^</span><span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="va">T_1</span><span class="op">-</span><span class="va">T_0</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    Growth_moderate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="va">Growth_linear</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>$ Pop $ County population. $ T $ Time (Year of the projection)</p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mi>o</mi><mi>p</mi></mrow><annotation encoding="application/x-tex">Pop</annotation></semantics></math>
+County population.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+Time (Year of the projection)</p>
 <p>The subscripts 0 and 1 represent the first and last years of the RFA
 projection.</p>
-<p>$ n = T_1 - T_0$</p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>=</mo><msub><mi>T</mi><mn>1</mn></msub><mo>−</mo><msub><mi>T</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">n = T_1 - T_0</annotation></semantics></math></p>
 <p>For each edition of the RFA projections,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
 is the number of years</p>
@@ -205,7 +208,8 @@ is the number of years</p>
 <p>The average annual population growth for each county is calculated by
 taking the difference between the first and last years of projected
 populations, and then dividing by the number of years (n).</p>
-<p>${AGR} = \sqrt[n]{ $</p>
+<p><span class="math inline">${AGR} = \sqrt[n]{
+\frac{Pop_1}{{Pop_0}}$</span></p>
 <p>The average annual growth rate (AGR) is calculated by dividing the
 projected populations of the last year by the projected populations of
 the first year and then finding the nth root. This is akin to
