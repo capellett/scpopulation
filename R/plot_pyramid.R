@@ -5,7 +5,7 @@
 pyramid_plot <- function(df) {
   dplyr::filter(df, Gender %in% c("Male", "Female")) |>
     dplyr::mutate(Population = if_else(
-      Gender == 'Male', Population, -Population)) |>  
+      Gender == 'Male', Population, -Population)) |>
     ggplot2::ggplot(
       ggplot2::aes(x=Population, y=`Age`, fill=Gender)) +
     ggplot2::geom_col() +
@@ -23,13 +23,3 @@ pop22_cohort |>
 
 ## animate for all years.
 ## add filter for counties.
-
-
-
-
-#' Create County Population Projection Plot
-#' @param df Data frame containing projection data
-#' @export
-county_population_projection_plot <- function(df) {
-  # Your existing projection plot code
-} 

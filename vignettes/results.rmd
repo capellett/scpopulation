@@ -1,22 +1,44 @@
 ---
-title: "04-Export"
-author: "C A Pellett"
+title: "Population Projection Results"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Population Projection Methodology}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 date: "`r Sys.Date()`"
-output: html_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-
-library(tidyverse)
 ```
 
+This vignette documents the data tables which result from the methods.
 ```{r}
 load("../data/pop_proj.rda")
+```
+
+## County-level growth
+
+
+
+```{r}
+## this is basically an R-shiny app.
+
+## A graph that cycles through counties.
+
+## a map that shows county projections on hover.
+
+
+
+## Show animated cohort-component plots.
+
+## Provide searchable tables for download.
 
 ```
 
+
 ```{r}
+
 unique(pop_proj$Period)
 unique(pop_proj$Scenario)
 unique(pop_proj$Type)
@@ -28,12 +50,12 @@ pop_proj |>
                   Type2 %in% c('Estimate', '2022 RFA Projection')) |>
   dplyr::select(Year, Population) |>
   write.csv(file='RFA 2022 Vintage Statewide Population Projections.csv')
-  
 
 ```
 
 
 ```{r}
+
 unique(pop_proj$Edition)
 
 pop_proj_x <- pop_proj %>%

@@ -1,5 +1,5 @@
 ---
-title: "Population Projections 1"
+title: "Data Read in Script"
 output: html_document
 ---
 
@@ -7,8 +7,6 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 ```
-
-
 
 Two editions of the SC ORFA population projections are reviewed and compared. The earlier edition (November 2019) includes population estimates from 2000 to 2018 and projections from 2019 to 2035. The more recent edition (August 2022) includes estimates from 2010 to 2020 and projections from 2021 to 2038. 
 

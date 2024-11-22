@@ -1,0 +1,232 @@
+---
+title: "Population Projection Methodology"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Population Projection Methodology}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This vignette describes the methodology used to produce the SC population projections. Complete metadata from SC RFA is provided for both the 2019 and 2022 editions. Then, the methods for extending the projections to 2070 are described. Finally, the high growth scenario is described.
+
+# Projection Methods
+
+The SC Office of Revenue and Fiscal Affairs (RFA) publishes population projections for each county in the state. The RFA population projections are stratified by gender and cohort. The projections were developed using the cohort-component method: rates of birth, death, migration are calculated for each gender-cohort in each county; the calculated rates are then applied to the county populations to project future populations year by year. One assumption underlying this method is that the relevant demographic rates calculated from the calibration period will remain uniform across the projection period.
+
+## 2019 Metadata
+
+"Population estimates for 2000 and 2018 were calculated using the Bridged-race Intercensal Population Estimates for July 1, 2000 -July 1, 2009 and the Vintage 2018 Bridged-Race Postcensal Estimates for July 1, 2010 -July 1, 2018. These estimates were produced by the Population Estimates Program of the U.S. Census Bureau in collaboration with National Center for Health Statistics. Estimates for 2000 through 2018 from previous or future releases of the postcensal estimates will vary slightly from the 2000 through 2018 data in this table. For all years, the population is estimated for July 1st of that year. Estimates for 2000 and 2010 will not be equivalent to the April 1st decennial census count from Census 2000 and Census 2010."							
+
+"Population Projections for 2019 through 2035 were calculated by the S.C. Revenue and Fiscal Affairs Health and Demographics Section. Births and deaths data used in the population projections calculations was supplied by the SC DHEC Division of Biostatistics.								
+							
+"Note: The projections included in this report were calculated using the cohort-component model of demographic change. This model uses a base population at a beginning date, applies assumed survival rates, fertility rates, and net migration to calculate population projections.								
+
+"These projections are not intended to be a forecast; rather, they are intended to demonstrate a likely scenario if future events unfold in a manner that reflects previous trends observed within each group. The model cannot account for unprecedented events that may significantly alter an area’s demographic composition in the future. These possible events include large factory openings or closings, changes in technology, public health crises, environmental events, changes in the economy, or other conditions that could affect birth rates, death rates, or domestic and international migration. This means that population projections are likely to be more accurate in the immediate future than in distant years into the future."
+
+## 2022 Metadata
+
+"Sources: Vintage 2020 Postcensal Estimates for July 1, 2010 -July 1, 2019.  Vintage 2021 Postcensal Estimates for July 1, 2020. These estimates were produced by the Population Estimates Program of the U.S. Census Bureau. Estimates for 2010 through 2020 from previous or future releases of the postcensal estimates will vary slightly from the 2010 through 2020 data in this table. For all years, the population is estimated for July 1st of that year. Estimates for 2020 will not be equivalent to the April 1st decennial census count from Census 2020.
+
+"Population Projections for 2021 through 20230 were calculated by the S.C. Revenue and Fiscal Affairs Data Integration and Analysis Division. Births and deaths data used in the population projections calculations was supplied by the SC DHEC Division of Biostatistics.	
+
+"Note: The projections included in this report were calculated using the cohort-component model of demographic change. This model uses a base population distributed by age and sex at a beginning date, applies assumed survival rates, age-specific fertility rates, and net migration by age and sex to calculate population projections.	
+
+"These projections offer only one possible scenario of future population change using the most current data available. The overall accuracy of the projections depends on the extent to which future events unfold in a manner that reflects previous trends observed within each group. The model cannot account for unprecedented events that may significantly alter an area’s demographic composition in the future. These possible events include large factory openings or closings, changes in technology, public health crises, environmental events, changes in the economy, or other conditions that could affect birth rates, death rates, or domestic and international migration. This means that population projections are likely to be more accurate in the immediate future than in distant years into the future."	
+
+```{r}
+## Everything I do here will be done with both editions of the population projections.
+## that way the changes across editions can be compared.
+load("../data/pop19.rda")
+load("../data/pop22.rda")
+
+## As more editions come out, keep appending them here.
+pop1 <- dplyr::bind_rows(
+  `2019`=dplyr::select(pop19, -FIPS),
+  `2022`=dplyr::select(pop22, -FIPS),
+  ## `2025` = pop25, ## for example.
+  .id='Edition') %>%
+  dplyr::mutate(County = stringr::str_to_upper(County),
+                Type = dplyr::recode(Type, Projection='SC RFA Projection'))
+
+rm(pop19, pop22)
+```
+
+## Growth and Growth Rate
+Two parameters are calculated from the RFA population projections: the average annual change in population, $\Delta Pop$, and the average annual growth rate, $AGR$. Population growth is expressed as a number of people per year (linear growth), and population growth rate is expressed as a percentage (exponential growth). 
+
+```{r}
+## I'm gonna go ahead and calculate the linear and exponential growth rates
+## for the Estimated data across the baseline as well as the RFA projections.
+## Each set of Edition, County, and Type is considered an independent timeseries
+## Time 0 is the first year of that series, and Time 1 is the last year of the series.
+
+pop2 <- pop1 %>%
+  dplyr::group_by(Edition, County, Type) %>%
+  dplyr::mutate(
+    T_0 = min(Year),
+    T_1 = max(Year),
+    Pop_0 = Population[which(Year==T_0)],
+    Pop_1 = Population[which(Year==T_1)],
+    Growth_linear = (Pop_1 - Pop_0)/(T_1-T_0),
+    Growth_exp = (Pop_1/Pop_0)^(1/(T_1-T_0)),
+    Growth_moderate = pmax(Growth_linear, 0)) %>%
+  dplyr::ungroup()
+```
+
+$ Pop $ County population.
+$ T $ Time (Year of the projection)
+
+The subscripts 0 and 1 represent the first and last years of the RFA projection.
+
+$ n = T_1 - T_0$
+
+For each edition of the RFA projections, $n$ is the number of years
+
+$\Delta Pop = ( Pop_1 - Pop_0 ) / n$
+
+The average annual population growth for each county is calculated by taking the difference between the first and last years of projected populations, and then dividing by the number of years (n).
+
+${AGR} = \sqrt[n]{ \frac{Pop_1}{{Pop_0}} $
+
+The average annual growth rate (AGR) is calculated by dividing the projected populations of the last year by the projected populations of the first year and then finding the nth root. This is akin to calculating an annually compounding interest rate, and it results in a decimal which can be expressed as a percentage. The state average AGR is 1.19% in the 2019 vintage, and 0.83% in the 2022 vintage of the RFA projections.
+
+```{r}
+hi_growth_floor <- pop2 %>%
+  dplyr::filter(County %in% c('South Carolina', 'SOUTH CAROLINA')) %>%
+  dplyr::distinct(Edition, Type, Growth_exp) %>%
+  dplyr::rename(Growth_exp_floor=Growth_exp)
+  
+pop3 <- pop2 %>%
+  dplyr::left_join(hi_growth_floor, c("Edition", "Type")) %>%
+  dplyr::mutate(Growth_hi = ((pmax(Growth_exp, Growth_exp_floor)-1)*1.1)+1)
+```
+
+The AGR values for the high projection scenario are calculated in two steps. First, county AGRs that are lower than the state average are raised to equal the state average of the RFA projection. Then, all county AGRs are increased by 10%. For example, the minimum county population growth rate in the High scenario for vintage 2019 is 1.31% (1.19% * 1.1 = 1.31%).
+
+
+
+```{r}
+pop_rates <- pop3 %>%
+  dplyr::distinct(Edition, County, Type, T_0, T_1, Pop_0, Pop_1, 
+                  Growth_moderate, Growth_hi)
+
+pop_rates
+```
+
+The following table summarizes the annual growth ($\Delta Pop$) and annual growth rates ($AGR$)for each county, and edition of RFA projections.
+
+```{r}
+summary0 <- pop_proj |>
+  dplyr::filter(Type == 'SC RFA Projection') |>
+  dplyr::mutate(
+    dplyr::across(
+      c(Pop_0, Pop_1, Growth_linear, Growth_moderate), as.integer),
+    dplyr::across(
+      c(Growth_exp, Growth_hi), function(x) {round((x-1)*100, 2)}),
+    Edition = paste0(Edition, ' Edition. (', T_0, '-', T_1, '). n = ', T_1-T_0)) |>
+  dplyr::select(County, Edition, Pop_0, Pop_1, 
+                `RFA $\\Delta Pop$`= Growth_linear, 
+                `Mod. $\\Delta Pop$`= Growth_moderate, 
+                `RFA AGR` = Growth_exp, 
+                `High AGR` = Growth_hi) |>
+  unique()
+
+summary1 <- summary0 |>
+  tidyr::pivot_wider(
+    names_from = Edition, id_cols=County,
+    values_from = 3:8)
+
+
+## 2019 Edition COUNTY 2022 Edition
+```
+
+
+
+## Extended Projections and High Growth Scenario
+The Moderate scenario is an extension of the RFA projections. For the extended Moderate scenario of water-demand projections, the average annual growth for each county is set to a minimum of 0. Then the RFA projections are extended with the county growth each year.
+
+The High scenario applies the AGR values calculated above, starting at the earliest year of the RFA population projection.
+
+```{r}
+### First create the high growth scenario along the RFA projections,
+pop_hi <- pop3 %>%
+  dplyr::mutate(Population = Growth_hi^(Year-T_0) * Pop_0) %>%
+  dplyr::group_by(Edition, County, Type) %>%
+  dplyr::mutate(Pop_1 = Population[Year==T_1],
+                Type2 = 'Extrapolated Projection')
+  
+pop4 <- dplyr::bind_rows(Moderate=pop3, High=pop_hi, .id='Scenario')
+
+## then extend all scenarios.
+pop_ex <- pop4 %>%
+  dplyr::select(-Year, -Population) %>%
+  unique() %>%
+  dplyr::group_by(dplyr::across(dplyr::everything())) %>%
+  dplyr::group_modify(
+    .f = function(.x, .y) tibble::tibble(Year = (.y$T_1+1):2070)) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(
+    Population = dplyr::recode(
+      Scenario,
+      Moderate=Growth_moderate*(Year-T_1) + Pop_1, ## y = mx + b
+      High=Growth_hi^(Year-T_1) * Pop_1),
+    Type2='Extrapolated Projection') ## y = m^x * b
+
+## Combine, then remove redundant Estimate entries.
+pop5 <- dplyr::bind_rows(
+  Original=pop4, Extended=pop_ex, .id='Period') %>% 
+  dplyr::filter(
+    !(Type=='Estimate' & (Scenario=='High' | Period=='Extended')))
+```
+
+
+```{r}
+## Organizing the data like this seems to work better.
+pop6 <- pop5 %>% 
+  dplyr::mutate(Type = dplyr::if_else(!is.na(Type2), Type2, Type)) %>%
+  dplyr::mutate(Type2 = dplyr::if_else(
+    Type == 'Estimate', "Estimate",
+    dplyr::if_else(
+      Type == 'SC RFA Projection' & Edition == '2019', '2019 RFA Projection',
+      dplyr::if_else(
+        Type == 'SC RFA Projection' & Edition == '2022', '2022 RFA Projection',
+        dplyr::if_else(
+          Scenario == 'High' & Edition == '2019', '2019 High Extrapolation',
+          dplyr::if_else(
+           Scenario == 'High' & Edition == '2022', '2022 High Extrapolation',
+           dplyr::if_else(
+              Scenario == 'Moderate' & Edition == '2019', '2019 Moderate Extrapolation',
+              dplyr::if_else(
+               Scenario == 'Moderate' & Edition == '2022', '2022 Moderate Extrapolation', 'NA')
+              )))))),
+    Scenario = dplyr::if_else(Type=='Estimate', 'Estimate', Scenario))
+```
+
+```{r}
+pop_proj <- pop6
+
+usethis::use_data(pop_proj, overwrite=T)
+```
+
+## Relative Growth Projections
+```{r}
+## Arguably, this should be in the scwaterdemand package.
+
+## Since the water suppliers don't have the same population as the counties
+## I need to calculate the relative changes in population at the county scale
+## so that can be applied to the populations of the water suppliers.
+
+pop_proj_relative <- pop_proj %>%
+  dplyr::filter(Year %in% c(2021:2070) & Edition == '2022') %>%
+  dplyr::select(Scenario, County, Year, Population) %>%
+  tidyr::spread('Scenario', 'Population') %>%
+  dplyr::group_by(County) %>%
+  dplyr::mutate(Driver_growth_mod = Moderate / Moderate[which.min(Year)],
+                Driver_growth_hi = High / High[which.min(Year)]) %>%
+  dplyr::ungroup()
+
+usethis::use_data(pop_proj_relative, overwrite=TRUE)
+
+```
+To translate the county population projections to the drinking water distributors, the population projections are converted in to relative growth. This is done by simply dividing the projected populations for each scenario, county, and year by the 2021 population for that county. 
+

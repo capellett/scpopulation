@@ -1,3 +1,5 @@
+#' Create County Population Projection Plot
+#' @param df Data frame containing projection data
 #' @export
 county_population_projection_plot <- function(df) {
   ggplot2::ggplot(df, ggplot2::aes(
@@ -36,3 +38,8 @@ county_population_projection_plot <- function(df) {
       keywidth=0.5, default.unit='cm')) +
     ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
     ggplot2::facet_wrap(County~., scales='free_y')}
+
+
+
+
+
