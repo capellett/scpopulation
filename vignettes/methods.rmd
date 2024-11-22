@@ -225,6 +225,9 @@ pop_proj_relative <- pop_proj |>
                 Driver_growth_hi = High / High[which.min(Year)]) |>
   dplyr::ungroup()
 
+```
+
+```{r eval=F}
 usethis::use_data(pop_proj_relative, overwrite=TRUE)
 
 ```
