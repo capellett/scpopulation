@@ -73,12 +73,12 @@ pop2 <- pop1 |>
   dplyr::ungroup()
 ```
 
-$ Pop $ County population.
-$ T $ Time (Year of the projection)
+$Pop$ County population.
+$T$ Time (Year of the projection)
 
 The subscripts 0 and 1 represent the first and last years of the RFA projection.
 
-$ n = T_1 - T_0$
+$n = T_1 - T_0$
 
 For each edition of the RFA projections, $n$ is the number of years
 
@@ -86,7 +86,7 @@ $\Delta Pop = ( Pop_1 - Pop_0 ) / n$
 
 The average annual population growth for each county is calculated by taking the difference between the first and last years of projected populations, and then dividing by the number of years (n).
 
-${AGR} = \sqrt[n]{ \frac{Pop_1}{{Pop_0}} $
+${AGR} = \sqrt[n]{ \frac{Pop_1}{{Pop_0}}$
 
 The average annual growth rate (AGR) is calculated by dividing the projected populations of the last year by the projected populations of the first year and then finding the nth root. This is akin to calculating an annually compounding interest rate, and it results in a decimal which can be expressed as a percentage. The state average AGR is 1.19% in the 2019 vintage, and 0.83% in the 2022 vintage of the RFA projections.
 
