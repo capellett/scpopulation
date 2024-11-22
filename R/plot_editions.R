@@ -25,8 +25,8 @@ plot_editions_simple <- function(pop){
 ## Maybe it is too complex or difficult to interpret.
 format_pop_editions <- function(pop) {
   pop_proj |> dplyr::filter(
-    !(Type=='Estimate' & Edition == '2021' & Year > 2009)) %>%
-    dplyr::mutate(Type = dplyr::if_else(!is.na(Type2), Type2, Type)) %>%
+    !(Type=='Estimate' & Edition == '2021' & Year > 2009)) |>
+    dplyr::mutate(Type = dplyr::if_else(!is.na(Type2), Type2, Type)) |>
     dplyr::mutate(Type = dplyr::if_else(
       Type == 'Estimate', "Estimate",
       dplyr::if_else(

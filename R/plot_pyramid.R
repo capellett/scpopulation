@@ -17,9 +17,9 @@ pyramid_plot <- function(df) {
 }
 
 #' Example
-pop22_cohort |>
-  dplyr::filter(County == 'SOUTH CAROLINA' & Year == 2021) |>
-  pyramid_plot()
+# pop22_cohort |>
+#   dplyr::filter(County == 'SOUTH CAROLINA' & Year == 2021) |>
+#   pyramid_plot()
 
 ## animate for all years.
 ## add filter for counties.

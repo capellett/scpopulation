@@ -2,7 +2,7 @@
 title: "Population Projection Results"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Population Projection Methodology}
+  %\VignetteIndexEntry{Population Projection Results}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 date: "`r Sys.Date()`"
@@ -37,7 +37,7 @@ load("../data/pop_proj.rda")
 ```
 
 
-```{r}
+```{r eval=F}
 
 unique(pop_proj$Period)
 unique(pop_proj$Scenario)
@@ -54,11 +54,11 @@ pop_proj |>
 ```
 
 
-```{r}
+```{r eval=F}
 
 unique(pop_proj$Edition)
 
-pop_proj_x <- pop_proj %>%
+pop_proj_x <- pop_proj |>
   dplyr::filter(Edition == '2022')
 
 unique(pop_proj_x$Scenario)
@@ -67,22 +67,22 @@ unique(pop_proj_x$Type2)
 
 unique(pop_proj_x$Period)
 
-pop_proj_x %>%
-  dplyr::filter(Scenario == 'Estimate') %>%
-  dplyr::select(County, Year, Population) %>%
-  tidyr::pivot_wider(names_from=Year, values_from=Population) %>%
+pop_proj_x |>
+  dplyr::filter(Scenario == 'Estimate') |>
+  dplyr::select(County, Year, Population) |>
+  tidyr::pivot_wider(names_from=Year, values_from=Population) |>
   readr::write_excel_csv('export//Population_historic.csv')
 
-pop_proj_x %>%
-  dplyr::filter(Scenario == 'Moderate') %>%
-  dplyr::select(County, Year, Population) %>%
-  tidyr::pivot_wider(names_from=Year, values_from=Population) %>%
+pop_proj_x |>
+  dplyr::filter(Scenario == 'Moderate') |>
+  dplyr::select(County, Year, Population) |>
+  tidyr::pivot_wider(names_from=Year, values_from=Population) |>
   readr::write_excel_csv('export//Population_moderate.csv')
 
-pop_proj_x %>%
-  dplyr::filter(Scenario == 'High') %>%
-  dplyr::select(County, Year, Population) %>%
-  tidyr::pivot_wider(names_from=Year, values_from=Population) %>%
+pop_proj_x |>
+  dplyr::filter(Scenario == 'High') |>
+  dplyr::select(County, Year, Population) |>
+  tidyr::pivot_wider(names_from=Year, values_from=Population) |>
   readr::write_excel_csv('export//Population_high.csv')
 
 ```

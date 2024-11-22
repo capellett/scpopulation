@@ -39,10 +39,10 @@ Two editions, or "vintages," of the SC RFA projections are included in this pack
 ```{r}
 county_ex <- c('South Carolina', 'Horry', 'Spartanburg', 'Allendale')
 
-pop_proj %>%
+pop_proj |>
   dplyr::mutate(County = stringr::str_to_title(County),
-                Edition = paste0('Vintage ', Edition)) %>%
-  dplyr::filter(County %in%  county_ex) %>%
+                Edition = paste0('Vintage ', Edition)) |>
+  dplyr::filter(County %in%  county_ex) |>
   dplyr::mutate(County = forcats::as_factor(County) |>
                   forcats::fct_relevel(county_ex)) |>
   plot_editions_simple() +

@@ -44,7 +44,7 @@ pop1 <- dplyr::bind_rows(
   `2019`=dplyr::select(pop19, -FIPS),
   `2022`=dplyr::select(pop22, -FIPS),
   ## `2025` = pop25, ## for example.
-  .id='Edition') %>%
+  .id='Edition') |>
   dplyr::mutate(County = stringr::str_to_upper(County),
                 Type = dplyr::recode(Type, Projection='SC RFA Projection'))
 
@@ -60,8 +60,8 @@ Two parameters are calculated from the RFA population projections: the average a
 ## Each set of Edition, County, and Type is considered an independent timeseries
 ## Time 0 is the first year of that series, and Time 1 is the last year of the series.
 
-pop2 <- pop1 %>%
-  dplyr::group_by(Edition, County, Type) %>%
+pop2 <- pop1 |>
+  dplyr::group_by(Edition, County, Type) |>
   dplyr::mutate(
     T_0 = min(Year),
     T_1 = max(Year),
@@ -69,7 +69,7 @@ pop2 <- pop1 %>%
     Pop_1 = Population[which(Year==T_1)],
     Growth_linear = (Pop_1 - Pop_0)/(T_1-T_0),
     Growth_exp = (Pop_1/Pop_0)^(1/(T_1-T_0)),
-    Growth_moderate = pmax(Growth_linear, 0)) %>%
+    Growth_moderate = pmax(Growth_linear, 0)) |>
   dplyr::ungroup()
 ```
 
@@ -91,22 +91,20 @@ ${AGR} = \sqrt[n]{ \frac{Pop_1}{{Pop_0}} $
 The average annual growth rate (AGR) is calculated by dividing the projected populations of the last year by the projected populations of the first year and then finding the nth root. This is akin to calculating an annually compounding interest rate, and it results in a decimal which can be expressed as a percentage. The state average AGR is 1.19% in the 2019 vintage, and 0.83% in the 2022 vintage of the RFA projections.
 
 ```{r}
-hi_growth_floor <- pop2 %>%
-  dplyr::filter(County %in% c('South Carolina', 'SOUTH CAROLINA')) %>%
-  dplyr::distinct(Edition, Type, Growth_exp) %>%
+hi_growth_floor <- pop2 |>
+  dplyr::filter(County %in% c('South Carolina', 'SOUTH CAROLINA')) |>
+  dplyr::distinct(Edition, Type, Growth_exp) |>
   dplyr::rename(Growth_exp_floor=Growth_exp)
   
-pop3 <- pop2 %>%
-  dplyr::left_join(hi_growth_floor, c("Edition", "Type")) %>%
+pop3 <- pop2 |>
+  dplyr::left_join(hi_growth_floor, c("Edition", "Type")) |>
   dplyr::mutate(Growth_hi = ((pmax(Growth_exp, Growth_exp_floor)-1)*1.1)+1)
 ```
 
 The AGR values for the high projection scenario are calculated in two steps. First, county AGRs that are lower than the state average are raised to equal the state average of the RFA projection. Then, all county AGRs are increased by 10%. For example, the minimum county population growth rate in the High scenario for vintage 2019 is 1.31% (1.19% * 1.1 = 1.31%).
 
-
-
 ```{r}
-pop_rates <- pop3 %>%
+pop_rates <- pop3 |>
   dplyr::distinct(Edition, County, Type, T_0, T_1, Pop_0, Pop_1, 
                   Growth_moderate, Growth_hi)
 
@@ -116,7 +114,7 @@ pop_rates
 The following table summarizes the annual growth ($\Delta Pop$) and annual growth rates ($AGR$)for each county, and edition of RFA projections.
 
 ```{r}
-summary0 <- pop_proj |>
+summary0 <- pop3 |> # pop_proj |>
   dplyr::filter(Type == 'SC RFA Projection') |>
   dplyr::mutate(
     dplyr::across(
@@ -149,22 +147,22 @@ The High scenario applies the AGR values calculated above, starting at the earli
 
 ```{r}
 ### First create the high growth scenario along the RFA projections,
-pop_hi <- pop3 %>%
-  dplyr::mutate(Population = Growth_hi^(Year-T_0) * Pop_0) %>%
-  dplyr::group_by(Edition, County, Type) %>%
+pop_hi <- pop3 |>
+  dplyr::mutate(Population = Growth_hi^(Year-T_0) * Pop_0) |>
+  dplyr::group_by(Edition, County, Type) |>
   dplyr::mutate(Pop_1 = Population[Year==T_1],
                 Type2 = 'Extrapolated Projection')
   
 pop4 <- dplyr::bind_rows(Moderate=pop3, High=pop_hi, .id='Scenario')
 
 ## then extend all scenarios.
-pop_ex <- pop4 %>%
-  dplyr::select(-Year, -Population) %>%
-  unique() %>%
-  dplyr::group_by(dplyr::across(dplyr::everything())) %>%
+pop_ex <- pop4 |>
+  dplyr::select(-Year, -Population) |>
+  unique() |>
+  dplyr::group_by(dplyr::across(dplyr::everything())) |>
   dplyr::group_modify(
-    .f = function(.x, .y) tibble::tibble(Year = (.y$T_1+1):2070)) %>%
-  dplyr::ungroup() %>%
+    .f = function(.x, .y) tibble::tibble(Year = (.y$T_1+1):2070)) |>
+  dplyr::ungroup() |>
   dplyr::mutate(
     Population = dplyr::recode(
       Scenario,
@@ -174,7 +172,7 @@ pop_ex <- pop4 %>%
 
 ## Combine, then remove redundant Estimate entries.
 pop5 <- dplyr::bind_rows(
-  Original=pop4, Extended=pop_ex, .id='Period') %>% 
+  Original=pop4, Extended=pop_ex, .id='Period') |> 
   dplyr::filter(
     !(Type=='Estimate' & (Scenario=='High' | Period=='Extended')))
 ```
@@ -182,8 +180,8 @@ pop5 <- dplyr::bind_rows(
 
 ```{r}
 ## Organizing the data like this seems to work better.
-pop6 <- pop5 %>% 
-  dplyr::mutate(Type = dplyr::if_else(!is.na(Type2), Type2, Type)) %>%
+pop6 <- pop5 |> 
+  dplyr::mutate(Type = dplyr::if_else(!is.na(Type2), Type2, Type)) |>
   dplyr::mutate(Type2 = dplyr::if_else(
     Type == 'Estimate', "Estimate",
     dplyr::if_else(
@@ -204,7 +202,9 @@ pop6 <- pop5 %>%
 
 ```{r}
 pop_proj <- pop6
+```
 
+```{r eval=F}
 usethis::use_data(pop_proj, overwrite=T)
 ```
 
@@ -216,13 +216,13 @@ usethis::use_data(pop_proj, overwrite=T)
 ## I need to calculate the relative changes in population at the county scale
 ## so that can be applied to the populations of the water suppliers.
 
-pop_proj_relative <- pop_proj %>%
-  dplyr::filter(Year %in% c(2021:2070) & Edition == '2022') %>%
-  dplyr::select(Scenario, County, Year, Population) %>%
-  tidyr::spread('Scenario', 'Population') %>%
-  dplyr::group_by(County) %>%
+pop_proj_relative <- pop_proj |>
+  dplyr::filter(Year %in% c(2021:2070) & Edition == '2022') |>
+  dplyr::select(Scenario, County, Year, Population) |>
+  tidyr::spread('Scenario', 'Population') |>
+  dplyr::group_by(County) |>
   dplyr::mutate(Driver_growth_mod = Moderate / Moderate[which.min(Year)],
-                Driver_growth_hi = High / High[which.min(Year)]) %>%
+                Driver_growth_hi = High / High[which.min(Year)]) |>
   dplyr::ungroup()
 
 usethis::use_data(pop_proj_relative, overwrite=TRUE)
