@@ -6,8 +6,8 @@ library(shiny)
 library(tidyverse)
 library(DT)
 
-load("data/pop19.rda")
-load("data/pop22.rda")
+# load("data/pop19.rda")
+# load("data/pop22.rda")
 
 ## ui
 ui <- fluidPage(
@@ -24,18 +24,18 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
 
-  data <- reactive({
-    switch(input$dataset,
-           "pop19" = pop19,
-           "pop22" = pop22)
-  })
+  # data <- reactive({
+  #   switch(input$dataset,
+  #          "pop19" = pop19,
+  #          "pop22" = pop22)
+  # })
 
-  observe({
-    updateSelectInput(session, 'county', 'Choose a county:', choices = unique(data()$County))
-  })
+  # observe({
+  #   updateSelectInput(session, 'county', 'Choose a county:', choices = unique(data()$County))
+  # })
 
   output$table <- DT::renderDataTable({
-    data()
+    iris # data()
   })
 }
 
