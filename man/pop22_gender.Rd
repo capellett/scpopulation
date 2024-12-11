@@ -3,7 +3,9 @@
 \docType{data}
 \name{pop22_gender}
 \alias{pop22_gender}
-\title{pop22_gender}
+\title{Population by gender from the 2022 edition (pop22_gender)
+This dataset came from the SC Office of Revenue and Fiscal Affairs.
+Tidy Format of (Nov 2022 Data)}
 \format{
 A tidy data frame after reshaped to \emph{long form} by creating new columns for Year, Type (Estimate or Projection), Gender (Total, Male, or Female), and Population.
 \describe{
@@ -19,6 +21,8 @@ A tidy data frame after reshaped to \emph{long form} by creating new columns for
 pop22_gender
 }
 \description{
+Population by gender from the 2022 edition (pop22_gender)
+This dataset came from the SC Office of Revenue and Fiscal Affairs.
 Tidy Format of (Nov 2022 Data)
 }
 \examples{

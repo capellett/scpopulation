@@ -3,12 +3,14 @@
 \docType{data}
 \name{pop_proj_relative}
 \alias{pop_proj_relative}
-\title{pop_proj_relative: Relative Growth Projections for Different Counties}
+\title{pop_proj_relative: Relative Growth Projections for Different Counties
+This dataset is extended from the 2022 SC RFA data using the methods described in the documentation.
+This dataset provides relative growth projections for different counties under moderate and high growth scenarios. It includes calculations for growth rates and driver growth factors under each scenario.}
 \format{
 The dataset is a data frame with the following columns:
 \describe{
 \item{\code{County}}{Name of the county}
-\item{\code{Year}}{Year of Projection (2000-2038)}
+\item{\code{Year}}{Year of Projection (2000-2070)}
 \item{\code{High}}{Population in the high growth scenario}
 \item{\code{Moderate}}{Population in the moderate growth scenario}
 \item{\code{Driver_growth_mod}}{Relative growth in population under the moderate growth scenario}
@@ -34,6 +36,8 @@ Here, \eqn{Growth\_{linear}} represents the average annual increase in populatio
 pop_proj_relative
 }
 \description{
+pop_proj_relative: Relative Growth Projections for Different Counties
+This dataset is extended from the 2022 SC RFA data using the methods described in the documentation.
 This dataset provides relative growth projections for different counties under moderate and high growth scenarios. It includes calculations for growth rates and driver growth factors under each scenario.
 }
 \examples{

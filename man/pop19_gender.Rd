@@ -3,19 +3,10 @@
 \docType{data}
 \name{pop19_gender}
 \alias{pop19_gender}
-\title{Population Data from 2019 Edition}
+\title{Population Data by Gender from 2019 Edition (pop19_gender)
+This dataset came from the SC Office of Revenue and Fiscal Affairs. It contains data for the Total, Male, and Female populations for each county. Population estimates from year 2000 to 2018 and population projections from 2019 to 2035 are included.}
 \format{
 A data frame with columns:
-\describe{
-\item{FIPS}{FIPS code}
-\item{County}{County name}
-\item{Year}{Year}
-\item{Type}{Estimate or Projection}
-\item{Gender}{Total, Male, or Female}
-\item{Population}{Population count}
-}
-
-A tidy data frame after reshaped to \emph{long form} by creating new columns for Year, Type (Estimate or Projection), Gender (Total, Male, or Female), and Population.
 \describe{
 \item{\code{FIPS}}{FIPS code of each county}
 \item{\code{County}}{Name  of county}
@@ -27,13 +18,10 @@ A tidy data frame after reshaped to \emph{long form} by creating new columns for
 }
 \usage{
 pop19_gender
-
-pop19_gender
 }
 \description{
-Population Data from 2019 Edition
-
-Tidy Format of Raw Data (Nov 2019 Data)
+Population Data by Gender from 2019 Edition (pop19_gender)
+This dataset came from the SC Office of Revenue and Fiscal Affairs. It contains data for the Total, Male, and Female populations for each county. Population estimates from year 2000 to 2018 and population projections from 2019 to 2035 are included.
 }
 \examples{
 data(pop19_gender)

@@ -3,7 +3,9 @@
 \docType{data}
 \name{pop22_cohort}
 \alias{pop22_cohort}
-\title{pop22_cohort}
+\title{Population by cohort from the 2022 edition (pop22_cohort)
+This dataset came from the SC Office of Revenue and Fiscal Affairs.
+A transformed and summarized population data, distinguishing between Estimate and Projections, reformatted for clarity, and adding a state-wide summary.}
 \format{
 Data frame including FIPS, County, Year, Type, Gender and Population.
 \describe{
@@ -21,6 +23,8 @@ Data frame including FIPS, County, Year, Type, Gender and Population.
 pop22_cohort
 }
 \description{
+Population by cohort from the 2022 edition (pop22_cohort)
+This dataset came from the SC Office of Revenue and Fiscal Affairs.
 A transformed and summarized population data, distinguishing between Estimate and Projections, reformatted for clarity, and adding a state-wide summary.
 }
 \examples{

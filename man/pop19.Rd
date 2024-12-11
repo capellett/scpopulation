@@ -3,7 +3,9 @@
 \docType{data}
 \name{pop19}
 \alias{pop19}
-\title{pop19}
+\title{Total population data from 2019 Edition (pop19)
+This dataset came from the SC Office of Revenue and Fiscal Affairs.
+Estimate and projection totals}
 \format{
 A data frame with columns including FIPS, County, Year, Type(Total), and Population.
 \describe{#'
@@ -18,6 +20,8 @@ A data frame with columns including FIPS, County, Year, Type(Total), and Populat
 pop19
 }
 \description{
+Total population data from 2019 Edition (pop19)
+This dataset came from the SC Office of Revenue and Fiscal Affairs.
 Estimate and projection totals
 }
 \examples{

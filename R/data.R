@@ -1,21 +1,6 @@
-#' Population Data from 2019 Edition
-#'
+#' Population Data by Gender from 2019 Edition (pop19_gender)
+#' This dataset came from the SC Office of Revenue and Fiscal Affairs. It contains data for the Total, Male, and Female populations for each county. Population estimates from year 2000 to 2018 and population projections from 2019 to 2035 are included.
 #' @format A data frame with columns:
-#' \describe{
-#'   \item{FIPS}{FIPS code}
-#'   \item{County}{County name}
-#'   \item{Year}{Year}
-#'   \item{Type}{Estimate or Projection}
-#'   \item{Gender}{Total, Male, or Female}
-#'   \item{Population}{Population count}
-#' }
-"pop19_gender"
-
-# ... (your other dataset documentation) #' pop19_gender
-#'
-#' Tidy Format of Raw Data (Nov 2019 Data)
-#'
-#' @format A tidy data frame after reshaped to _long form_ by creating new columns for Year, Type (Estimate or Projection), Gender (Total, Male, or Female), and Population.
 #' \describe{
 #'   \item{\code{FIPS}}{FIPS code of each county}
 #'   \item{\code{County}}{Name  of county}
@@ -30,9 +15,9 @@
 #' head(pop19_gender)
 "pop19_gender"
 
-#'pop19
-#'
-#'Estimate and projection totals
+#' Total population data from 2019 Edition (pop19)
+#' This dataset came from the SC Office of Revenue and Fiscal Affairs.
+#' Estimate and projection totals
 #'
 #' @format A data frame with columns including FIPS, County, Year, Type(Total), and Population.
 #' \describe{#'
@@ -48,8 +33,8 @@
 "pop19"
 
 
-#'pop22_cohort
-#'
+#' Population by cohort from the 2022 edition (pop22_cohort)
+#' This dataset came from the SC Office of Revenue and Fiscal Affairs.
 #' A transformed and summarized population data, distinguishing between Estimate and Projections, reformatted for clarity, and adding a state-wide summary.
 #' @format Data frame including FIPS, County, Year, Type, Gender and Population.
 #' \describe{
@@ -68,8 +53,8 @@
 "pop22_cohort"
 
 
-#' pop22_gender
-#'
+#' Population by gender from the 2022 edition (pop22_gender)
+#' This dataset came from the SC Office of Revenue and Fiscal Affairs.
 #' Tidy Format of (Nov 2022 Data)
 #'
 #' @format A tidy data frame after reshaped to _long form_ by creating new columns for Year, Type (Estimate or Projection), Gender (Total, Male, or Female), and Population.
@@ -88,9 +73,9 @@
 "pop22_gender"
 
 
-#'pop22
-#'
-#'Estimate and projection totals
+#' Population totals from the 2022 edition (pop22)
+#' This dataset came from the SC Office of Revenue and Fiscal Affairs.
+#' Estimate and projection totals
 #'
 #' @format A data frame with columns including FIPS, County, Year, Type(Total), and Population.
 #' \describe{#'
@@ -106,14 +91,14 @@
 "pop22"
 
 #' pop_proj_relative: Relative Growth Projections for Different Counties
-#'
+#' This dataset is extended from the 2022 SC RFA data using the methods described in the documentation.
 #' This dataset provides relative growth projections for different counties under moderate and high growth scenarios. It includes calculations for growth rates and driver growth factors under each scenario.
 #'
 #' @format
 #' The dataset is a data frame with the following columns:
 #' \describe{
 #'   \item{\code{County}}{Name of the county}
-#'   \item{\code{Year}}{Year of Projection (2000-2038)}
+#'   \item{\code{Year}}{Year of Projection (2000-2070)}
 #'   \item{\code{High}}{Population in the high growth scenario}
 #'   \item{\code{Moderate}}{Population in the moderate growth scenario}
 #'   \item{\code{Driver_growth_mod}}{Relative growth in population under the moderate growth scenario}
@@ -139,3 +124,30 @@
 #' data(pop_proj_relative)
 #' head(pop_proj_relative)
 "pop_proj_relative"
+
+
+#' pop_proj Results of extending the SC RFA projections
+#' This table includes detailed results of the methods used to extend the projections (for both editions of the SC RFA projections).
+#' @format A data frame with columns:
+#' \describe{
+#'  \item{\code{Period}}{Original (from SC RFA) or Extended (from the methods used to extend the projections)}
+#'  \item{\code{Scenario}}{Estimate, Moderate, or High}
+#'  \item{\code{Edition}}{2019 or 2022}
+#'  \item{\code{County}}{Name of the county}
+#'  \item{\code{Year}}{Year of Projection (2000-2070)}
+#'  \item{\code{Type}}{Estimate, SC RFA Projection, or Extrapolated Projection}
+#'  \item{\code{Population}}{Population number}
+#'  \item{\code{T_0}}{Initial year for this "scenario"}
+#'  \item{\code{T_1}}{Final year for this "scenario"}
+#'  \item{\code{Pop_0}}{Initial population for this "scenario"}
+#'  \item{\code{Pop_1}}{Final population for this "scenario"}
+#'  \item{\code{Growth_linear}}{Population growth for this "scenario," annual change in population}
+#'  \item{\code{Growth_exp}}{Exponential growth rate for this "scenario"}
+#'  \item{\code{Growth_moderate}}{Annual change  in population under the moderate growth scenario (linear growth with minimum set to zero)}
+#'  \item{\code{Growth_exp_floor}}{Minimum growth rate for the High scenario (the state-wide average*1.1)}
+#'  \item{\code{Growth_hi}}{Exponential growth rate for this "scenario," floor set to at least the state average growth rate}
+#'  \item{\code{Type2}}{Relative growth in population under the moderate growth scenario (2019 edition)}
+#'
+#'
+#'
+#'
