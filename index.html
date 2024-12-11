@@ -35,7 +35,8 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/methods.html">Population Projection Methodology</a></li>
+<li><a class="dropdown-item" href="articles/intro.html">Population Projection Methodology</a></li>
+    <li><a class="dropdown-item" href="articles/methods.html">Population Projection Methodology</a></li>
     <li><a class="dropdown-item" href="articles/results.html">Population Projection Results</a></li>
   </ul>
 </li>
@@ -59,54 +60,23 @@
 <h2 id="an-r-package-containing-population-projections-for-the-state-of-south-carolina">An R-package containing population projections for the state of South Carolina.<a class="anchor" aria-label="anchor" href="#an-r-package-containing-population-projections-for-the-state-of-south-carolina"></a>
 </h2>
 <p><code>scpopulation</code> is an open-source R-package published as a repository on GitHub. The package stores county level population data and projections from the South Carolina Office of Revenue and Fiscal Affairs (SC RFA), extended to 2070 and with an additional high growth scenario. The population projection scenarios presented here have been used for water availability planning in SC. This website documents the scpopulation R-package and provides access to the data for the general public without requiring the use of R software.</p>
-<p>This package and website was developed and is maintained by Dr. Charles Alex Pellett, while working at the South Carolina Department of Natural Resources (SC DNR) and subsequently the South Carolina Department of Environmental Services (SC DES). This information is intended for research and long-term water planning. None of the above guarantees the accuracy, reliability, or completeness of this information. The SC RFA, SC DNR, SC DES, and Dr. Pellett are NOT liable for any loss or damage arising from the use of this information.</p>
+<p>This package was developed by Dr. Charles Alex Pellett, while working at the South Carolina Department of Natural Resources (SC DNR) and subsequently the South Carolina Department of Environmental Services (SC DES). This information is intended for research and long-term water planning. None of the above guarantees the accuracy, reliability, or completeness of this information. The SC RFA, SC DNR, SC DES, and Dr. Pellett are NOT liable for any loss or damage arising from the use of this information.</p>
 <p>More information on the SC RFA projections is available on their website:</p>
 <p><a href="https://rfa.sc.gov/data-research/population-demographics/census-state-data-center/estimates-projections-dashboard/estimates-projections-data-downloads" class="external-link uri">https://rfa.sc.gov/data-research/population-demographics/census-state-data-center/estimates-projections-dashboard/estimates-projections-data-downloads</a></p>
 <p>More information on the South Carolina Water Plan is available on the SC DES website:</p>
 <p><a href="https://www.des.sc.gov/programs/bureau-water/hydrology/water-planning/water-planning-overview" class="external-link uri">https://www.des.sc.gov/programs/bureau-water/hydrology/water-planning/water-planning-overview</a></p>
-</div>
-</div>
-<div class="section level1">
-<h1 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
-</h1>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="st">"data/pop_proj.rda"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="st">"R/plot_editions.R"</span><span class="op">)</span></span></code></pre></div>
-<p>Two editions, or “vintages,” of the SC RFA projections are included in this package, 2019 and 2022. Both editions have been used as inputs to the River Basin Plans which have been developed in South Carolina over this time. Each edition of the RFA projections includes a single scenario which extends 15 years. For the purpose of long-term water planning, the projections are extended to 2070, and an additional scenario of high population growth has been developed. The graphs below illustrate both editions of the results, at a state-wide level and for several example counties.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">county_ex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'South Carolina'</span>, <span class="st">'Horry'</span>, <span class="st">'Spartanburg'</span>, <span class="st">'Allendale'</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">pop_proj</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>County <span class="op">=</span> <span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/case.html" class="external-link">str_to_title</a></span><span class="op">(</span><span class="va">County</span><span class="op">)</span>,</span>
-<span>                Edition <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'Vintage '</span>, <span class="va">Edition</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">County</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span>  <span class="va">county_ex</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>County <span class="op">=</span> <span class="fu">forcats</span><span class="fu">::</span><span class="fu">as_factor</span><span class="op">(</span><span class="va">County</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>                  <span class="fu">forcats</span><span class="fu">::</span><span class="fu">fct_relevel</span><span class="op">(</span><span class="va">county_ex</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="reference/plot_editions_simple.html">plot_editions_simple</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position<span class="op">=</span><span class="st">'bottom'</span>, legend.title<span class="op">=</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">'Population (thousands)'</span><span class="op">)</span></span></code></pre></div>
-<p><img src="README_files/figure-gfm/unnamed-chunk-3-1.png"><!-- --></p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co"># ggplot2::ggsave('plots/selected counties.png', height=6, width=6)</span></span></code></pre></div>
-<p>For each edition of the RFA projections, the RFA population numbers are represented by the “Moderate” scenario. The Moderate scenario is intended to represent a probable scenario of moderate growth. The “High” scenario is intended to represent a plausible, but unlikely, scenario of high growth. It is an extrapolation based on simple methods. Overall, the population of South Carolina is projected to continue growing, but the more recent projections are generally lower than the earlier edition.</p>
-<p>Horry county is an example of a rapidly growing population which is no longer projected to grow as rapidly. The difference is most clear in the High scenario. Stakeholders in the Pee Dee basin noted that the earlier edition of the High scenario in Horry county seemed unrealistically high, and the updated edition seemed more realistic.</p>
-<p>Spartanburg county is an example of a rapidly growing county which is now projected to grow even faster. Stakeholders in the Broad basin had commented on the earlier edition of the projections that the High population scenario seemed more realistic than the Moderate population scenario in Spartanburg county. The updated projections appear to align more closely with their expectations.</p>
-<p>Allendale county is an example of a shrinking population. For the purposes of long-term planning for water availability at a basin-wide scale, it is generally important to plan for growth. In the High scenario, all counties grow at least 10% faster than the statewide average projected by SC RFA. In the Moderate scenario, declining populations are projected to stabilize at the end of the SC RFA projection period.</p>
-<p>The SC RFA publishes their population projections approximately a year after the population data is released (by the US Census). Thus, the “vintage” of the data precedes the year of publication.</p>
 <p>The Methods section of this document includes metadata from the SC RFA and a detailed description of the calculations for the extended projections and High scenario.</p>
 <p>The Results section includes graphical and tabular results for all counties.</p>
+</div>
 <div class="section level2">
 <h2 id="use-in-r">Use in R<a class="anchor" aria-label="anchor" href="#use-in-r"></a>
 </h2>
 <p>As an R-package, <code>scpopulation</code> can be installed in an R terminal with the following code:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages('devtools') </span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">'https://github.com/capellett/scpopulation'</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
-
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
