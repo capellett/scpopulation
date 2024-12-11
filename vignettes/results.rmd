@@ -17,7 +17,17 @@ load("../data/pop_proj.rda")
 Complete results are provided in the table below. Column documentation can be found here:
 
 ```{r eval=F, warning=F}
-help(pop_proj)
+help("pop_proj")
+
+?pop_proj
+
+data?pop_proj
+
+vignette('Introduction', package='scpopulation')
+
+vignette('introduction', package='scpopulation')
+
+vignette('intro', package='scpopulation')
 ```
 
 ```{r echo=F}
