@@ -6,7 +6,7 @@
 # library(tidyverse)
 # library(bslib)
 #
-# load("data/pop_proj.rda")
+load("data/pop_proj.rda")
 
 downloadButton <- function(...) {
   tag <- shiny::downloadButton(...)
