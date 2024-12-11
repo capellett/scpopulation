@@ -22,7 +22,8 @@ Imports:
     tidyr,
     scales,
     shiny,
-    forcats
+    forcats,
+    DT
 Suggests:
     knitr,
     rmarkdown
