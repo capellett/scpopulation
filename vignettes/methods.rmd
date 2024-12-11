@@ -210,8 +210,6 @@ usethis::use_data(pop_proj, overwrite=T)
 
 ## Relative Growth Projections
 ```{r}
-## Arguably, this should be in the scwaterdemand package.
-
 ## Since the water suppliers don't have the same population as the counties
 ## I need to calculate the relative changes in population at the county scale
 ## so that can be applied to the populations of the water suppliers.

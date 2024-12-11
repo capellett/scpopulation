@@ -27,16 +27,18 @@ More information on the South Carolina Water Plan is available on the SC DES web
 
 https://www.des.sc.gov/programs/bureau-water/hydrology/water-planning/water-planning-overview
 
-# Overview
-```{r}
+```{r, echo=F}
 load("data/pop_proj.rda")
-
 source("R/plot_editions.R")
+source('R/app.R')
+
+scpopulation_app()
 ```
 
+# Overview
 Two editions, or "vintages," of the SC RFA projections are included in this package, 2019 and 2022. Both editions have been used as inputs to the River Basin Plans which have been developed in South Carolina over this time. Each edition of the RFA projections includes a single scenario which extends 15 years. For the purpose of long-term water planning, the projections are extended to 2070, and an additional scenario of high population growth has been developed. The graphs below illustrate both editions of the results, at a state-wide level and for several example counties.
 
-```{r}
+```{r echo=F}
 county_ex <- c('South Carolina', 'Horry', 'Spartanburg', 'Allendale')
 
 pop_proj |>
