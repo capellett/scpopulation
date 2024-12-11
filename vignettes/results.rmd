@@ -14,7 +14,11 @@ knitr::opts_chunk$set(echo = TRUE)
 load("../data/pop_proj.rda")
 ```
 
-Complete results are provided in the table below. Column documentation can be found here: `help(pop_proj)`
+Complete results are provided in the table below. Column documentation can be found here:
+
+```{r eval=F}
+pop_proj
+```
 
 ```{r echo=F}
 DT::datatable(
