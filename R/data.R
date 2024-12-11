@@ -148,6 +148,7 @@
 #'  \item{\code{Growth_hi}}{Exponential growth rate for this "scenario," floor set to at least the state average growth rate}
 #'  \item{\code{Type2}}{Relative growth in population under the moderate growth scenario (2019 edition)}
 #'
-#'
-#'
-#'
+#' @examples
+#' data(pop_proj)
+#' head(pop_proj)
+"pop_proj"
