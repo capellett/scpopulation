@@ -16,8 +16,8 @@ load("../data/pop_proj.rda")
 
 Complete results are provided in the table below. Column documentation can be found here:
 
-```{r eval=F}
-pop_proj
+```{r eval=F, warning=F}
+help(pop_proj)
 ```
 
 ```{r echo=F}

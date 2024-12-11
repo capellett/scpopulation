@@ -31,7 +31,7 @@ The Introduction article provides an overview of the county population projectio
 
 The Methods article includes metadata from the SC RFA and a detailed description of the calculations for the extended projections and High scenario. 
 
-The Results article (Work in Progress) includes graphical and tabular results for all counties.
+The Results article includes tabular results for all counties.
 
 ## Use in R
 As an R-package, `scpopulation` can be installed in an R terminal with the following code:
