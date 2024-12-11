@@ -33,12 +33,15 @@ DES website:
 
 <https://www.des.sc.gov/programs/bureau-water/hydrology/water-planning/water-planning-overview>
 
-The Methods section of this document includes metadata from the SC RFA
-and a detailed description of the calculations for the extended
-projections and High scenario.
+The Introduction article provides an overview of the county population
+projection data and shows some example graphs.
 
-The Results section includes graphical and tabular results for all
-counties.
+The Methods article includes metadata from the SC RFA and a detailed
+description of the calculations for the extended projections and High
+scenario.
+
+The Results article (Work in Progress) includes graphical and tabular
+results for all counties.
 
 ## Use in R
 
