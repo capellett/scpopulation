@@ -21,7 +21,8 @@ Imports:
     dplyr,
     tidyr,
     scales,
-    shiny
+    shiny,
+    forcats
 Suggests:
     knitr,
     rmarkdown
