@@ -8,9 +8,9 @@ vignette: >
 ---
 
 ```{r, setup, echo=F}
-pkgload::load_all(".")
-# load("data/pop_proj.rda")
-# source("R/plot_editions.R")
+# pkgload::load_all(".")
+load("../data/pop_proj.rda")
+source("../R/plot_editions.R")
 ```
 
 # Introduction
