@@ -1,8 +1,8 @@
 ---
-title: "Population Projection Methodology"
+title: "Introduction"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Population Projection Methodology}
+  %\VignetteIndexEntry{Introduction}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -13,11 +13,9 @@ load("../data/pop_proj.rda")
 source("../R/plot_editions.R")
 ```
 
-# Introduction
-
 Two editions, or "vintages," of the SC RFA projections are included in this package, 2019 and 2022. Both editions have been used as inputs to the River Basin Plans which have been developed in South Carolina over this time. Each edition of the RFA projections includes a single scenario which extends 15 years. For the purpose of long-term water planning, the projections are extended to 2070, and an additional scenario of high population growth has been developed. The graphs below illustrate both editions of the results, at a state-wide level and for several example counties.
 
-```{r, plots, echo=F}
+```{r, plots, fig.width=6, fig.height=6, echo=F}
 county_ex <- c('South Carolina', 'Horry', 'Spartanburg', 'Allendale')
 
 pop_proj |>
@@ -32,6 +30,7 @@ pop_proj |>
 
 # ggplot2::ggsave('plots/selected counties.png', height=6, width=6)
 ```
+
 For each edition of the RFA projections, the RFA population numbers are represented by the "Moderate" scenario. The Moderate scenario is intended to represent a probable scenario of moderate growth. The "High" scenario is intended to represent a plausible, but unlikely, scenario of high growth. It is an extrapolation based on simple methods. Overall, the population of South Carolina is projected to continue growing, but the more recent projections are generally lower than the earlier edition. 
 
 Horry county is an example of a rapidly growing population which is no longer projected to grow as rapidly. The difference is most clear in the High scenario. Stakeholders in the Pee Dee basin noted that the earlier edition of the High scenario in Horry county seemed unrealistically high, and the updated edition seemed more realistic.
