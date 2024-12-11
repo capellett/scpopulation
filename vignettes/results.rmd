@@ -14,27 +14,27 @@ knitr::opts_chunk$set(echo = TRUE)
 load("../data/pop_proj.rda")
 ```
 
-Complete results are provided in the table below. Column documentation can be found here: `scpopulation::pop_proj`
+Complete results are provided in the table below. Column documentation can be found here: `help(pop_proj)`
 
 ```{r echo=F}
 DT::datatable(
   data = pop_proj, 
   filter='top', 
   rownames = FALSE,
-  width=18,
-  extensions = c('Buttons', 'ColReorder'),
+  # width=18,
+  extensions = c('Buttons'),
   options = list(
     order = list(1, 'asc'),
     buttons = c('copy', 'csv', 'excel'), #  'colvis',
-    autoWidth = FALSE,
-    pageLength = 25,
+    # autoWidth = FALSE,
     search = list(regex = TRUE),
     # autoHideNavigation = TRUE,
-    colReorder = TRUE,
-    scroller = TRUE,
+    # colReorder = TRUE,
+    # scroller = TRUE,
     # scrollY = 600,
     # scrollX = TRUE,
-    dom = 'Blftip'))
+    dom = 'tBlip', # 'Blftip',
+    pageLength = 25))
   
 ```
 
@@ -60,7 +60,7 @@ unique(pop_proj$County)
 
 ```
 
-```{r eval=F}
+```{r echo=F, eval=F}
 
 unique(pop_proj$Edition)
 

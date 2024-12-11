@@ -15,7 +15,7 @@ License: MIT + file LICENSE
 URL: https://github.com/capellett/scpopulation, https://capellett.github.io/scpopulation/
 BugReports: https://github.com/capellett/scpopulation/issues
 Depends: 
-    R (>= 2.10)
+    R (>= 3.5)
 Imports:
     ggplot2,
     dplyr,

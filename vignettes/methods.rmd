@@ -205,6 +205,13 @@ pop_proj <- pop6
 ```
 
 ```{r eval=F}
+## round the growth columns to 4 decimals
+pop_proj <- pop_proj |>
+  dplyr::mutate(
+    dplyr::across(
+      c(Growth_linear, Growth_moderate, Growth_exp, Growth_exp_floor, Growth_hi), 
+      function(x) round(x, 4)))
+
 usethis::use_data(pop_proj, overwrite=T)
 ```
 
