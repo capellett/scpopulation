@@ -1,4 +1,9 @@
 url: https://capellett.github.io/scpopulation/
 template:
   bootstrap: 5
+  social: true
+deploy:
+  install_metadata: true
+
+
 
